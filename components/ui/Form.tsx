@@ -1,4 +1,4 @@
-import React, { RefObject } from 'react';
+import React from 'react';
 
 // Form types and attributes
 interface FormProps extends React.FormHTMLAttributes<HTMLFormElement> {
@@ -11,11 +11,22 @@ interface FormGroupProps extends React.HTMLAttributes<HTMLDivElement> {
 
 interface FormLabel extends React.LabelHTMLAttributes<HTMLLabelElement> {
 	children: React.ReactNode;
+	styles?: string;
+}
+
+interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
+	isLoading?: boolean;
+	children: React.ReactNode;
 }
 
 interface FormInput extends React.InputHTMLAttributes<HTMLInputElement> {
-	ref: RefObject<HTMLInputElement>;
+	styles?: string;
 }
+
+type FormError = {
+	children: React.ReactNode;
+	className: string;
+};
 
 // Form
 export function Form({ className, children, ...props }: FormProps) {
@@ -53,12 +64,32 @@ export function FormLabel({ className, children, ...props }: FormLabel) {
 	);
 }
 
-export function FormInput({ className, ref, ...props }: FormInput) {
+export function FormInput({ className, ...props }: FormInput) {
 	return (
 		<input
-			ref={ref}
 			className={className}
 			{...props}
 		/>
 	);
+}
+
+export function Button({
+	className,
+	children,
+	isLoading = false,
+	...props
+}: ButtonProps) {
+	return (
+		<button
+			className={className}
+			{...props}
+			disabled={isLoading}
+		>
+			{children}
+		</button>
+	);
+}
+
+export function FormError({ className, children }: FormError) {
+	return <span className={className}>{children}</span>;
 }
