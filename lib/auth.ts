@@ -2,6 +2,7 @@
 
 import * as z from 'zod';
 import { getUserEmail, createUser } from '@/db/dal';
+import { createSession } from './session';
 
 export type ActionResponse = {
 	success: boolean;
@@ -103,6 +104,8 @@ export async function signUp(formData: FormData): Promise<ActionResponse> {
 				error: 'Failed to create user',
 			};
 		}
+		
+		await createSession(createNewUser.id);
 
 		return {
 			success: true,
