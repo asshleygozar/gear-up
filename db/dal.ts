@@ -1,17 +1,18 @@
 import { PrismaClient } from '@/lib/generated/prisma';
 import { hash, compare } from 'bcryptjs';
+import { cache } from 'react';
 const prisma = new PrismaClient();
 
 // Check if user input email exists
-export async function getUserEmail(email: string) {
-	const findUser = await prisma.users.findFirst({
+export const getUserByEmail = cache(async (email: string) => {
+	const findUser = await prisma.users.findUnique({
 		where: {
 			email: email,
 		},
 	});
 
 	return findUser;
-}
+});
 
 // Get user info (email and password)
 export async function getUserInfo(email: string, password: string) {
@@ -36,4 +37,12 @@ export async function createUser(email: string, password: string) {
 	});
 
 	return insertUser;
+}
+
+//Check if password is valid
+export async function verifyPassword(
+	password: string,
+	recordedPassword: string
+) {
+	return compare(password, recordedPassword);
 }

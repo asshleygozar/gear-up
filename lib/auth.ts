@@ -1,7 +1,7 @@
 'use server';
 
 import * as z from 'zod';
-import { getUserEmail, createUser } from '@/db/dal';
+import { getUserByEmail, createUser, verifyPassword } from '@/db/dal';
 import { createSession } from './session';
 
 export type ActionResponse = {
@@ -53,6 +53,32 @@ export async function signIn(formData: FormData): Promise<ActionResponse> {
 			};
 		}
 
+		const user = await getUserByEmail(data.email);
+		if (!user) {
+			return {
+				success: false,
+				message: 'Invalid email or password',
+				errors: {
+					email: ['Invalid email or password'],
+				},
+			};
+		}
+
+		const isPasswordValid = await verifyPassword(
+			data.password,
+			user.password ?? ''
+		);
+
+		if (!isPasswordValid) {
+			return {
+				success: false,
+				message: 'Invalid username or password',
+				error: 'Invalid username or password',
+			};
+		}
+
+		await createSession(user.id);
+
 		return {
 			success: true,
 			message: 'Signed in successfully',
@@ -86,7 +112,7 @@ export async function signUp(formData: FormData): Promise<ActionResponse> {
 			};
 		}
 
-		const isUserExists = await getUserEmail(data.email);
+		const isUserExists = await getUserByEmail(data.email);
 
 		if (isUserExists) {
 			return {
@@ -104,7 +130,7 @@ export async function signUp(formData: FormData): Promise<ActionResponse> {
 				error: 'Failed to create user',
 			};
 		}
-		
+
 		await createSession(createNewUser.id);
 
 		return {
