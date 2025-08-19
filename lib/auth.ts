@@ -1,12 +1,13 @@
 'use server';
 
 import * as z from 'zod';
-import { getUserEmail, createUser } from '@/db/schema';
+import { getUserEmail, createUser } from '@/db/dal';
 
 export type ActionResponse = {
 	success: boolean;
 	message: string;
 	error?: string;
+	errors?: Record<string, string[]>;
 };
 
 const SignInSchema = z.object({
@@ -22,7 +23,7 @@ const SignUpSchema = z
 		email: z
 			.string()
 			.min(1, 'Email is required')
-			.check(z.email('Invalid email address')),
+			.email('Invalid email address'),
 		password: z.string().min(6, 'Password must be atleast 6 characters'),
 		confirmPassword: z.string().min(1, 'Please confirm your password'),
 	})
@@ -70,7 +71,7 @@ export async function signUp(formData: FormData): Promise<ActionResponse> {
 		const data = {
 			email: formData.get('email') as string,
 			password: formData.get('password') as string,
-			confirmPassowrd: formData.get('confirmPassword') as string,
+			confirmPassword: formData.get('confirmPassword') as string,
 		};
 
 		const dataValidationResult = SignUpSchema.safeParse(data);
@@ -79,7 +80,8 @@ export async function signUp(formData: FormData): Promise<ActionResponse> {
 			return {
 				success: false,
 				message: 'Data validation result failed',
-				error: 'An error occured while validating',
+				error: 'An error occured while validation',
+				errors: dataValidationResult.error.flatten().fieldErrors,
 			};
 		}
 
