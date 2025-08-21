@@ -9,6 +9,8 @@ import {
 	FormInput,
 	FormLabel,
 } from '@/components/ui/Form';
+import { Loader2Icon } from 'lucide-react';
+import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { signIn, ActionResponse } from '@/lib/auth';
 import { cn } from '@/lib/utils';
@@ -56,9 +58,11 @@ export default function SignInPage() {
 		<div className='h-screen flex justify-center items-center'>
 			<Form
 				action={formAction}
-				className='bg-white rounded-xl p-[2rem] w-md h-fit flex flex-col gap-[1rem] shadow-lg'
+				className='bg-white rounded-xl p-[2rem] w-md h-fit flex flex-col gap-[1rem] shadow-md'
 			>
-				<h1 className='text-center text-2xl'>Sign In</h1>
+				<h1 className='text-center text-2xl font-inter font-semibold'>
+					Log into your account
+				</h1>
 				<FormError className='text-red-400'>{state.message}</FormError>
 				<FormGroup className='flex flex-col gap-2'>
 					<FormLabel htmlFor='email'>Email</FormLabel>
@@ -67,7 +71,7 @@ export default function SignInPage() {
 						name='email'
 						type='email'
 						required
-						placeholder='Email'
+						placeholder='Enter email'
 						className={cn(
 							'file:text-foreground placeholder:text-muted-foreground selection:bg-primary selection:text-primary-foreground dark:bg-input/30 border-input flex h-9 w-full min-w-0 rounded-md border bg-transparent px-3 py-1 text-base shadow-xs transition-[color,box-shadow] outline-none file:inline-flex file:h-7 file:border-0 file:bg-transparent file:text-sm file:font-medium disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50 md:text-sm',
 							'focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px]',
@@ -82,7 +86,7 @@ export default function SignInPage() {
 						name='password'
 						type='password'
 						required
-						placeholder='Password'
+						placeholder='Enter password'
 						className={cn(
 							'file:text-foreground placeholder:text-muted-foreground selection:bg-primary selection:text-primary-foreground dark:bg-input/30 border-input flex h-9 w-full min-w-0 rounded-md border bg-transparent px-3 py-1 text-base shadow-xs transition-[color,box-shadow] outline-none file:inline-flex file:h-7 file:border-0 file:bg-transparent file:text-sm file:font-medium disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50 md:text-sm',
 							'focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px]',
@@ -93,10 +97,17 @@ export default function SignInPage() {
 				<Button
 					type='submit'
 					disabled={isPending}
-					className='bg-blue-400 text-white hover:bg-blue-300'
+					className='bg-blue-400 text-white text-md font-inter font-medium hover:bg-blue-300'
 				>
-					Sign in
+					{isPending ? <Loader2Icon className='animate-spin' /> : 'Sign in'}
 				</Button>
+				<p className='text-center text-sm'>
+					Don&apos;t have an account?{' '}
+					<Link href={'/signup'}>
+						<span className='text-link-foreground'>Sign up</span>
+					</Link>{' '}
+					instead
+				</p>
 			</Form>
 		</div>
 	);

@@ -6,11 +6,13 @@ import {
 	FormGroup,
 	FormError,
 } from '@/components/ui/Form';
+import { Loader2Icon } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { ActionResponse, signUp } from '@/lib/auth';
 import { useRouter } from 'next/navigation';
 import { useActionState } from 'react';
 import { cn } from '@/lib/utils';
+import Link from 'next/link';
 
 export default function SignUpPage() {
 	const router = useRouter();
@@ -52,14 +54,19 @@ export default function SignUpPage() {
 	return (
 		<div className='h-screen flex justify-center items-center shadow-md'>
 			<Form
-				className='bg-white rounded-xl p-[2rem] w-md h-fit flex flex-col gap-[1rem] shadow-lg'
+				className='bg-white rounded-xl p-[2rem] w-md h-fit flex flex-col gap-[1rem] shadow-md'
 				action={formAction}
 			>
-				<h1 className='text-center text-2xl'>Sign Up</h1>
-				{!state.success && state.error && (
+				<h1 className='text-center text-2xl font-semibold'>
+					Create an account
+				</h1>
+				{state?.errors?.email && (
 					<FormError className='text-red-400'>
-						{state.message} {state?.errors?.email}
+						{state.errors.email[0]}
 					</FormError>
+				)}
+				{!state.success && state?.message && (
+					<FormError className='text-red-400'>{state.message}</FormError>
 				)}
 				<FormGroup className='flex flex-col gap-2'>
 					<FormLabel htmlFor='email'>Email</FormLabel>
@@ -68,6 +75,7 @@ export default function SignUpPage() {
 						type='email'
 						name='email'
 						autoComplete='email'
+						placeholder='Enter email'
 						required
 						className={cn(
 							'file:text-foreground placeholder:text-muted-foreground selection:bg-primary selection:text-primary-foreground dark:bg-input/30 border-input flex h-9 w-full min-w-0 rounded-md border bg-transparent px-3 py-1 text-base shadow-xs transition-[color,box-shadow] outline-none file:inline-flex file:h-7 file:border-0 file:bg-transparent file:text-sm file:font-medium disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50 md:text-sm',
@@ -76,6 +84,11 @@ export default function SignUpPage() {
 						)}
 					/>
 				</FormGroup>
+				{state?.errors?.password && (
+					<FormError className='text-red-400'>
+						{state.errors.password[0]}
+					</FormError>
+				)}
 				<FormGroup className='flex flex-col gap-2'>
 					<FormLabel htmlFor='password'>Password</FormLabel>
 					<FormInput
@@ -83,6 +96,7 @@ export default function SignUpPage() {
 						type='password'
 						name='password'
 						autoComplete='password'
+						placeholder='Create password'
 						required
 						className={cn(
 							'file:text-foreground placeholder:text-muted-foreground selection:bg-primary selection:text-primary-foreground dark:bg-input/30 border-input flex h-9 w-full min-w-0 rounded-md border bg-transparent px-3 py-1 text-base shadow-xs transition-[color,box-shadow] outline-none file:inline-flex file:h-7 file:border-0 file:bg-transparent file:text-sm file:font-medium disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50 md:text-sm',
@@ -91,12 +105,18 @@ export default function SignUpPage() {
 						)}
 					/>
 				</FormGroup>
+				{state?.errors?.confirmPassword && (
+					<FormError className='text-red-400'>
+						{state.errors.confirmPassword[0]}
+					</FormError>
+				)}
 				<FormGroup className='flex flex-col gap-2'>
 					<FormLabel htmlFor='confirm-password'>Confirm password</FormLabel>
 					<FormInput
 						id='confirmPassword'
 						type='password'
 						name='confirmPassword'
+						placeholder='Re-type password'
 						required
 						className={cn(
 							'file:text-foreground placeholder:text-muted-foreground selection:bg-primary selection:text-primary-foreground dark:bg-input/30 border-input flex h-9 w-full min-w-0 rounded-md border bg-transparent px-3 py-1 text-base shadow-xs transition-[color,box-shadow] outline-none file:inline-flex file:h-7 file:border-0 file:bg-transparent file:text-sm file:font-medium disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50 md:text-sm',
@@ -106,14 +126,21 @@ export default function SignUpPage() {
 					/>
 				</FormGroup>
 				<Button
-					className='w-[100%] bg-blue-400 text-white hover:bg-blue-300'
+					className='bg-blue-400 text-white text-md font-inter font-medium hover:bg-blue-300'
 					disabled={isPending}
 					variant={'secondary'}
 					size={'lg'}
 					type='submit'
 				>
-					Sign up
+					{isPending ? <Loader2Icon className='animate-spin' /> : 'Sign up'}
 				</Button>
+				<p className='text-center text-sm'>
+					Already have an account?{' '}
+					<Link href={'/signin'}>
+						<span className='text-link-foreground'>Sign in</span>
+					</Link>{' '}
+					instead
+				</p>
 			</Form>
 		</div>
 	);
