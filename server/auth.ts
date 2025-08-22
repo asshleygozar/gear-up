@@ -2,7 +2,7 @@
 
 import * as z from 'zod';
 import { getUserByEmail, createUser, verifyPassword } from '@/db/dal';
-import { createSession } from './session';
+import { createSession } from '../lib/session';
 
 export type ActionResponse = {
 	success: boolean;
