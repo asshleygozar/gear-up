@@ -1,4 +1,5 @@
 import { PrismaClient } from '@/lib/generated/prisma';
+import { getSession } from '@/lib/session';
 import { hash, compare } from 'bcryptjs';
 import { cache } from 'react';
 const prisma = new PrismaClient();
@@ -46,3 +47,22 @@ export async function verifyPassword(
 ) {
 	return compare(password, recordedPassword);
 }
+
+export const getCurrentUser = cache(async () => {
+	const cookieSession = await getSession();
+
+	if (!cookieSession) return null;
+
+	try {
+		const result = await prisma.users.findUnique({
+			where: {
+				id: cookieSession.userId,
+			},
+		});
+
+		return result || null;
+	} catch (error) {
+		console.error(error);
+		return null;
+	}
+});

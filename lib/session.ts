@@ -12,7 +12,7 @@ const JWT_SECRET = new TextEncoder().encode(
 	process.env.JWT_SECRET_TOKEN ||
 		'2839b2e8yztbt7178v267e853785ev32863vx76bzx7826z782bw892shajbaosh8&6575bi'
 );
-const JWT_EXPIRATION = '7d';
+const JWT_EXPIRATION = '30s';
 
 async function generateJWT(payload: JWTPayload) {
 	return await new jose.SignJWT(payload)
@@ -68,7 +68,7 @@ export const getSession = cache(async () => {
 		if (!token) return null;
 
 		const payLoad = await verifyJWTToken(token);
-		return payLoad ? { useId: payLoad.userId } : null;
+		return payLoad ? { userId: payLoad.userId } : null;
 	} catch (error) {
 		console.error(error);
 	}
