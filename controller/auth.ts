@@ -1,7 +1,7 @@
 'use server';
 
 import * as z from 'zod';
-import { getUserByEmail, createUser, verifyPassword } from '@/model/dal';
+import { getUserByEmail, createUser, verifyPassword } from '@/model/user';
 import { createSession } from '../lib/session';
 
 export type ActionResponse = {
