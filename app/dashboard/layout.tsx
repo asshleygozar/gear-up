@@ -1,5 +1,5 @@
 import LeftSidebar from '@/components/LeftSidebar';
-import { getCurrentUser } from '@/model/dal';
+import { getCurrentUser } from '@/model/user';
 import { redirect } from 'next/navigation';
 
 const DashboardLayout = async ({ children }: { children: React.ReactNode }) => {
