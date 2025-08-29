@@ -1,13 +1,19 @@
 'use client';
-import styles from '@/styles/home.module.css';
 import { format } from 'date-fns';
 import { useStorage } from '@/context/useStorage';
 import RightSideBar from '@/components/RightSideBar';
-import { MainCard, SubCard, AccountCard } from '@/components/ui/Card';
+import { MainCard, SubCard, AccountCard } from '@/components/ui/MockCard';
 import MainModal from '@/components/MainModal';
 import accounts from '@/utils/accounts';
 import { useEffect, useState } from 'react';
 import { NavigationProvider } from '@/context/useNavigation';
+import {
+	Card,
+	CardContent,
+	CardFooter,
+	CardHeader,
+	CardTitle,
+} from '@/components/ui/card';
 
 function Home() {
 	// temporary storage using context for development purposes
@@ -20,45 +26,9 @@ function Home() {
 	}, []);
 
 	return (
-		<div className={styles.container}>
-			<section className={styles.content}>
-				<MainCard
-					title='Net Worth'
-					currency='$'
-					balance={netWorth}
-					date={`${timeStamp}`}
-				/>
-				<div className='w-full min-h-[100%] grid grid-rows-2 gap-[12px] '>
-					<SubCard
-						title='Assets'
-						balance={totalAssets}
-						currency='$'
-						date={`${timeStamp}`}
-					/>
-					<SubCard
-						title='Liabilities'
-						balance={totalLiabilities}
-						currency='$'
-						date={`${timeStamp}`}
-					/>
-				</div>
+		<div className='h-[100vh] w-full bg-background-color'>
+			<h1>Hello</h1>
 
-				<div>
-					<h1>Chart here</h1>
-				</div>
-			</section>
-			<section>
-				<RightSideBar>
-					{accounts.map((account) => (
-						<AccountCard
-							key={account.id}
-							balance={account.balance}
-							accountName={account.accountName}
-							accountCategory={account.accountCategory}
-						/>
-					))}
-				</RightSideBar>
-			</section>
 			<NavigationProvider>{isClick ? <MainModal /> : ''}</NavigationProvider>
 		</div>
 	);

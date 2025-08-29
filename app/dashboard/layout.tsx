@@ -1,4 +1,9 @@
-import LeftSidebar from '@/components/LeftSidebar';
+import { LeftSidebar } from '@/components/LeftSidebar';
+import {
+	Sidebar,
+	SidebarProvider,
+	SidebarTrigger,
+} from '@/components/ui/sidebar';
 import { getCurrentUser } from '@/model/user';
 import { redirect } from 'next/navigation';
 
@@ -8,10 +13,13 @@ const DashboardLayout = async ({ children }: { children: React.ReactNode }) => {
 		redirect('/signin');
 	}
 	return (
-		<main className='grid grid-cols-[250px_1fr]'>
+		<SidebarProvider>
 			<LeftSidebar />
-			{children}
-		</main>
+			<main>
+				<SidebarTrigger />
+				{children}
+			</main>
+		</SidebarProvider>
 	);
 };
 
