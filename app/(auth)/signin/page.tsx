@@ -14,6 +14,7 @@ import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { signIn, ActionResponse } from '@/controller/auth';
 import { cn } from '@/lib/utils';
+import { Card } from '@/components/ui/card';
 
 const initialState: ActionResponse = {
 	success: false,
@@ -58,7 +59,7 @@ export default function SignInPage() {
 		<div className='h-screen flex justify-center items-center'>
 			<Form
 				action={formAction}
-				className='bg-white rounded-xl p-[2rem] w-md h-fit flex flex-col gap-[1rem] shadow-md'
+				className='bg-card rounded-xl p-[2rem] w-md h-fit flex flex-col gap-[1rem] shadow-md'
 			>
 				<h1 className='text-center text-2xl font-inter font-semibold'>
 					Log into your account
@@ -97,14 +98,14 @@ export default function SignInPage() {
 				<Button
 					type='submit'
 					disabled={isPending}
-					className='bg-blue-400 text-white text-md font-inter font-medium hover:bg-blue-300'
+					className='bg-brand text-white text-md font-inter font-medium hover:bg-green-400 cursor-pointer'
 				>
 					{isPending ? <Loader2Icon className='animate-spin' /> : 'Sign in'}
 				</Button>
 				<p className='text-center text-sm'>
 					Don&apos;t have an account?{' '}
 					<Link href={'/signup'}>
-						<span className='text-link-foreground'>Sign up</span>
+						<span className='text-brand'>Sign up</span>
 					</Link>{' '}
 					instead
 				</p>
