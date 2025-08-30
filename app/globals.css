@@ -57,7 +57,7 @@
 	--color-header: var(--head-foreground);
 	--color-sub-head: var(--sub-head-foreground);
 	--color-body: var(--body-foreground);
-	--color-brand-foreground: var(--primary-green);
+	--color-brand: var(--primary-green);
 	--color-income: var(--income-positive);
 	--color-link-foreground: var(--accent-blue);
 	--color-sidebar-ring: var(--sidebar-ring);
