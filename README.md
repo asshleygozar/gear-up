@@ -6,26 +6,27 @@ An organized and accesible financial manager dedicated to track personal finance
 
 - **Easy money tracking**:
 
-  - track different streams of income such as passive, earned, and other type of income
-  - records expenses and debts allowing for organized financial allocations
+  - track personal finances such as cash and bank accounts
+  - records income, expenses, and current balance for quick overview
 
 - **Financial report**
 
   - generate monthly/yearly financial report in pdf format
   - structured and organized financial report format
 
-- **Investments**
+- **Set goals**
 
-  - Allows real time tracking of invesments such as stocks and cryptocurrencies
+  - provides comprehensive and structured saving page for future goals
+
+- **Budget setting**
+
+  - limit expense spending with budgeting constraint
 
 - **Data visualization**
 
   - Bar chart
   - Line chart
   - Pie chart
-
-- **Net worth**
-  - allows calculation of overall net worth based on existing data
 
 ## Technology Stack
 
@@ -34,15 +35,15 @@ An organized and accesible financial manager dedicated to track personal finance
   - Next.js 15
   - React
   - Typescipt
-  - CSS module
-  - LineIcons (For UI Icons)
+  - Tailwind
+  - Lucide icon (For icons)
   - Shadcn/ui Components
   - Recharts (For data visualization)
 
 - **Backend**
 
-  - Next.js API routes
-  - Node.js
+  - Python
+  - FastAPI
   - Zod (For form data validation)
   - Prisma (For ORM)
   - Postgresql (For data persistence)
@@ -50,3 +51,115 @@ An organized and accesible financial manager dedicated to track personal finance
 - **Resources and API**
 
   - [date-fns](https://github.com/date-fns/date-fns) for date formatting
+
+## Prerequisites
+
+- Node.js >= 22.14.0
+- Postgresql installed locally or via docker
+
+## Installation and Setup
+
+- **Install dependencies**
+
+  ```
+    # Clone the repository
+    git clone https://github.com/asshleygozar/gear-up.git
+
+    # Go to the project directory
+    cd gear-up
+
+    # Install dependencies
+    npm install
+  ```
+
+- **Set up local database**
+
+  - use postgresql for local database
+
+- **Change environment variables**
+
+  ```
+    DATABASE_URL=<postgresql://user/:password@localhost:5432/dbname>
+    JWT_SECRET_TOKEN=<your-own-jwt-token>
+  ```
+
+- **Generate prisma schema**
+
+  ```
+    # For initializing prisma schema with env config
+    npx prisma init
+
+    # Migrate current database model to your local database
+    npx prisma migrate dev --name init
+  ```
+
+- **Run the application**
+
+  ```
+    # Run nextjs application
+    npm run dev
+  ```
+
+## Directory Structure
+
+```
+  Project_Root
+├── app
+|  ├── (auth)
+|  ├── (marketing)
+|  ├── dashboard
+|  ├── favicon.ico
+|  ├── globals.css
+|  └── layout.tsx
+├── components
+|  ├── Brand.tsx
+|  ├── CreateAccountModal.tsx
+|  ├── LeftSidebar.tsx
+|  ├── MainModal.tsx
+|  ├── ModalNavigation.tsx
+|  ├── NewTransactionModal.tsx
+|  ├── RightSideBar.tsx
+|  └── ui
+├── components.json
+├── context
+|  ├── useNavigation.tsx
+|  └── useStorage.tsx
+├── controller
+|  └── auth.ts
+├── eslint.config.mjs
+├── hooks
+|  └── use-mobile.ts
+├── lib
+|  ├── generated
+|  ├── session.ts
+|  └── utils.ts
+├── model
+|  └── user.ts
+├── next-env.d.ts
+├── next.config.ts
+├── node_modules
+├── package-lock.json
+├── package.json
+├── postcss.config.mjs
+├── prisma
+|  ├── migrations
+|  └── schema.prisma
+├── public
+|  ├── file.svg
+|  ├── globe.svg
+|  ├── next.svg
+|  ├── vercel.svg
+|  └── window.svg
+├── README.md
+├── styles
+|  ├── accounts.module.css
+|  ├── components
+|  └── create-account.module.css
+├── test
+├── tsconfig.json
+├── utils
+|  └── accounts.ts
+└── vitest.config.mts
+```
+
+© Asshley Gozar All rights reserved
