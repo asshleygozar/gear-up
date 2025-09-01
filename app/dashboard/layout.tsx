@@ -1,9 +1,5 @@
 import { LeftSidebar } from '@/components/LeftSidebar';
-import {
-	Sidebar,
-	SidebarProvider,
-	SidebarTrigger,
-} from '@/components/ui/sidebar';
+import { SidebarProvider, SidebarTrigger } from '@/components/ui/sidebar';
 import { getCurrentUser } from '@/model/user';
 import { redirect } from 'next/navigation';
 
@@ -15,7 +11,7 @@ const DashboardLayout = async ({ children }: { children: React.ReactNode }) => {
 	return (
 		<SidebarProvider>
 			<LeftSidebar />
-			<main>
+			<main className='h-full w-full'>
 				<SidebarTrigger />
 				{children}
 			</main>
