@@ -1,4 +1,4 @@
-# Financial Manager
+# GearUp
 
 An organized and accesible financial manager dedicated to track personal finances such as money and investments. The goal of this application is to provide an organized and standard way of building financial wealth through organized financial management toward a financially-free future.
 
