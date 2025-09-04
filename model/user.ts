@@ -28,12 +28,19 @@ export async function getUserInfo(email: string, password: string) {
 }
 
 // Insert user info
-export async function createUser(email: string, password: string) {
+export async function createUser(
+	email: string,
+	password: string,
+	username: string,
+	dateAccountCreated: Date
+) {
 	const hashedPassword = await hash(password, 10);
 	const insertUser = await prisma.users.create({
 		data: {
 			email: email,
+			name: username,
 			password: hashedPassword,
+			user_account_date_created: dateAccountCreated,
 		},
 	});
 
@@ -56,7 +63,7 @@ export const getCurrentUser = cache(async () => {
 	try {
 		const result = await prisma.users.findUnique({
 			where: {
-				id: cookieSession.userId,
+				user_id: cookieSession.userId,
 			},
 		});
 
