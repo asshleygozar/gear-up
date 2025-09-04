@@ -7,6 +7,7 @@
 		"build": "next build",
 		"start": "next start",
 		"db:pull": "npx prisma db pull",
+		"db:generate": "npx prisma generate",
 		"lint": "next lint"
 	},
 	"dependencies": {

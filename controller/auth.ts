@@ -1,6 +1,7 @@
 'use server';
 
 import * as z from 'zod';
+import { format } from 'date-fns';
 import { getUserByEmail, createUser, verifyPassword } from '@/model/user';
 import { createSession } from '../lib/session';
 
@@ -77,7 +78,7 @@ export async function signIn(formData: FormData): Promise<ActionResponse> {
 			};
 		}
 
-		await createSession(user.id);
+		await createSession(user.user_id);
 
 		return {
 			success: true,
@@ -122,7 +123,14 @@ export async function signUp(formData: FormData): Promise<ActionResponse> {
 			};
 		}
 
-		const createNewUser = await createUser(data.email, data.password);
+		const dateAccountCreated = new Date();
+		const username = data.email.split('@')[0];
+		const createNewUser = await createUser(
+			data.email,
+			username,
+			data.password,
+			dateAccountCreated
+		);
 		if (!createNewUser) {
 			return {
 				success: false,
@@ -131,7 +139,7 @@ export async function signUp(formData: FormData): Promise<ActionResponse> {
 			};
 		}
 
-		await createSession(createNewUser.id);
+		await createSession(createNewUser.user_id);
 
 		return {
 			success: true,
