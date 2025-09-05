@@ -8,10 +8,7 @@ interface JWTPayload {
 	[key: string]: string | number | boolean | null | undefined;
 }
 
-const JWT_SECRET = new TextEncoder().encode(
-	process.env.JWT_SECRET_TOKEN ||
-		'2839b2e8yztbt7178v267e853785ev32863vx76bzx7826z782bw892shajbaosh8&6575bi'
-);
+const JWT_SECRET = new TextEncoder().encode(process.env.JWT_SECRET_TOKEN);
 const JWT_EXPIRATION = '7d';
 
 async function generateJWT(payload: JWTPayload) {

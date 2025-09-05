@@ -1,7 +1,6 @@
 'use server';
 
 import * as z from 'zod';
-import { format } from 'date-fns';
 import { getUserByEmail, createUser, verifyPassword } from '@/model/user';
 import { createSession } from '../lib/session';
 
