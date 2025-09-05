@@ -6,32 +6,31 @@ const prisma = new PrismaClient();
 
 // Check if user input email exists
 export const getUserByEmail = cache(async (email: string) => {
-	const findUser = await prisma.users.findUnique({
+	const userEmail = await prisma.users.findUnique({
 		where: {
 			email: email,
 		},
 	});
 
-	return findUser;
+	return userEmail?.email;
 });
 
 // Get user info (email and password)
-export async function getUserInfo(email: string, password: string) {
-	const getInfo = await prisma.users.findFirst({
+export async function getUserInfo(email: string) {
+	const userInfo = await prisma.users.findUnique({
 		where: {
 			email: email,
-			password: password,
 		},
 	});
 
-	return getInfo;
+	return userInfo;
 }
 
 // Insert user info
 export async function createUser(
 	email: string,
-	password: string,
 	username: string,
+	password: string,
 	dateAccountCreated: Date
 ) {
 	const hashedPassword = await hash(password, 10);
