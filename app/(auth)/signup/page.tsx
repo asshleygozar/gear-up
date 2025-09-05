@@ -52,9 +52,9 @@ export default function SignUpPage() {
 	>(handleSubmit, initialState);
 
 	return (
-		<div className='h-screen flex justify-center items-center shadow-md'>
+		<div className='h-screen flex justify-center items-center'>
 			<Form
-				className='bg-white rounded-xl p-[2rem] w-md h-fit flex flex-col gap-[1rem] shadow-md'
+				className='bg-card rounded-xl p-[2rem] w-md h-fit flex flex-col gap-[1rem] shadow-md'
 				action={formAction}
 			>
 				<h1 className='text-center text-2xl font-semibold'>
@@ -126,7 +126,7 @@ export default function SignUpPage() {
 					/>
 				</FormGroup>
 				<Button
-					className='bg-blue-400 text-white text-md font-inter font-medium hover:bg-blue-300'
+					className='bg-brand text-white text-md font-inter font-medium hover:bg-blue-300'
 					disabled={isPending}
 					variant={'secondary'}
 					size={'lg'}
@@ -137,7 +137,7 @@ export default function SignUpPage() {
 				<p className='text-center text-sm'>
 					Already have an account?{' '}
 					<Link href={'/signin'}>
-						<span className='text-link-foreground'>Sign in</span>
+						<span className='text-brand'>Sign in</span>
 					</Link>{' '}
 					instead
 				</p>
