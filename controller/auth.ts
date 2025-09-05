@@ -1,7 +1,13 @@
 'use server';
 
 import * as z from 'zod';
-import { getUserByEmail, createUser, verifyPassword } from '@/model/user';
+import {
+	createUser,
+	verifyPassword,
+	getCurrentUser,
+	getUserInfo,
+	getUserByEmail,
+} from '@/model/user';
 import { createSession } from '../lib/session';
 
 export type ActionResponse = {
@@ -53,7 +59,7 @@ export async function signIn(formData: FormData): Promise<ActionResponse> {
 			};
 		}
 
-		const user = await getUserByEmail(data.email);
+		const user = await getUserInfo(data.email);
 		if (!user) {
 			return {
 				success: false,
@@ -151,5 +157,20 @@ export async function signUp(formData: FormData): Promise<ActionResponse> {
 			message: 'An error occurred while creating your account',
 			error: 'An error occured while creating your account',
 		};
+	}
+}
+
+export async function getCurrentUsername() {
+	try {
+		const result = await getCurrentUser();
+
+		if (!result) {
+			return null;
+		}
+
+		return result.name;
+	} catch (error) {
+		console.error(error);
+		return null;
 	}
 }
