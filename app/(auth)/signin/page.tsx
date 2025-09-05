@@ -14,7 +14,6 @@ import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { signIn, ActionResponse } from '@/controller/auth';
 import { cn } from '@/lib/utils';
-import { Card } from '@/components/ui/card';
 
 const initialState: ActionResponse = {
 	success: false,
