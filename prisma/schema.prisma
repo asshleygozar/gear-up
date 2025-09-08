@@ -21,6 +21,7 @@ model users {
 model accounts {
   account_id        Int                 @id @default(autoincrement())
   account_name      String?             @db.VarChar(255)
+  account_type      String?             @db.VarChar(255)
   total_balance     Decimal?            @db.Decimal(10, 2)
   total_income      Decimal?            @db.Decimal(10, 2)
   total_expense     Decimal?            @db.Decimal(10, 2)
