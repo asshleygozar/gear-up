@@ -1,3 +1,4 @@
+'use client';
 import { Home, CreditCard, Settings, Coins } from 'lucide-react';
 
 import {
@@ -11,6 +12,8 @@ import {
 } from '@/components/ui/sidebar';
 import Link from 'next/link';
 import { BrandNameLogo } from './Brand';
+import Modal from './Modal';
+import { CategoryProvider } from '@/context/useCategory';
 
 // Menu items.
 const items = [
@@ -38,26 +41,29 @@ const items = [
 
 export function LeftSidebar() {
 	return (
-		<Sidebar className='p-[1rem]'>
-			<SidebarContent>
-				<BrandNameLogo />
-				<SidebarGroup>
-					<SidebarGroupContent>
-						<SidebarMenu>
-							{items.map((item) => (
-								<SidebarMenuItem key={item.title}>
-									<SidebarMenuButton asChild>
-										<Link href={item.url}>
-											<item.icon />
-											<span>{item.title}</span>
-										</Link>
-									</SidebarMenuButton>
-								</SidebarMenuItem>
-							))}
-						</SidebarMenu>
-					</SidebarGroupContent>
-				</SidebarGroup>
-			</SidebarContent>
-		</Sidebar>
+		<CategoryProvider>
+			<Sidebar className='p-[1rem]'>
+				<SidebarContent>
+					<BrandNameLogo />
+					<SidebarGroup>
+						<SidebarGroupContent>
+							<Modal />
+							<SidebarMenu>
+								{items.map((item) => (
+									<SidebarMenuItem key={item.title}>
+										<SidebarMenuButton asChild>
+											<Link href={item.url}>
+												<item.icon />
+												<span>{item.title}</span>
+											</Link>
+										</SidebarMenuButton>
+									</SidebarMenuItem>
+								))}
+							</SidebarMenu>
+						</SidebarGroupContent>
+					</SidebarGroup>
+				</SidebarContent>
+			</Sidebar>
+		</CategoryProvider>
 	);
 }
