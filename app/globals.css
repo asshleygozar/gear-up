@@ -85,6 +85,18 @@
 	--shadow-md: var(--card-shadow);
 }
 
+/* Remove arrow key on number type inputs for clean ui*/
+/* Chrome, Safari, Edge, Opera */
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+	@apply appearance-none m-0;
+}
+
+/* Firefox */
+input[type='number'] {
+	-moz-appearance: textfield;
+}
+
 @media (prefers-color-scheme: dark) {
 	:root {
 		--background: oklch(0.147 0.004 49.25);

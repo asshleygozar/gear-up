@@ -9,24 +9,26 @@ type StorageContextType = {
 	setTotalAssets: React.Dispatch<React.SetStateAction<number>>;
 	totalLiabilities: number;
 	setTotalLiabilities: React.Dispatch<React.SetStateAction<number>>;
-	isClick: boolean;
-	setClick: React.Dispatch<React.SetStateAction<boolean>>;
-	handleClick: boolean;
-}
+};
 
 const StorageContext = createContext<StorageContextType | undefined>(undefined);
 
 export function StorageProvider({ children }: { children: React.ReactNode }) {
-	
 	const [netWorth, setNetWorth] = useState(0);
 	const [totalAssets, setTotalAssets] = useState(0);
 	const [totalLiabilities, setTotalLiabilities] = useState(0);
-	const [isClick, setClick] = useState(false);
-	const handleClick = isClick ? false : true;
-
 
 	return (
-		<StorageContext.Provider value={{ netWorth, setNetWorth, totalAssets, setTotalAssets, totalLiabilities, setTotalLiabilities, isClick, setClick, handleClick}}>
+		<StorageContext.Provider
+			value={{
+				netWorth,
+				setNetWorth,
+				totalAssets,
+				setTotalAssets,
+				totalLiabilities,
+				setTotalLiabilities,
+			}}
+		>
 			{children}
 		</StorageContext.Provider>
 	);
