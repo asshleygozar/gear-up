@@ -1,5 +1,10 @@
 'use client';
+<<<<<<< Updated upstream
 import { Home, CreditCard, Settings, Coins } from 'lucide-react';
+=======
+
+import { Home, CreditCard, Settings, Coins, PlusIcon } from 'lucide-react';
+>>>>>>> Stashed changes
 
 import {
 	Sidebar,
@@ -13,7 +18,10 @@ import {
 import Link from 'next/link';
 import { BrandNameLogo } from './Brand';
 import Modal from './Modal';
+<<<<<<< Updated upstream
 import { CategoryProvider } from '@/context/useCategory';
+=======
+>>>>>>> Stashed changes
 
 // Menu items.
 const items = [
@@ -41,6 +49,7 @@ const items = [
 
 export function LeftSidebar() {
 	return (
+<<<<<<< Updated upstream
 		<CategoryProvider>
 			<Sidebar className='p-[1rem]'>
 				<SidebarContent>
@@ -65,5 +74,29 @@ export function LeftSidebar() {
 				</SidebarContent>
 			</Sidebar>
 		</CategoryProvider>
+=======
+		<Sidebar className='p-[1rem]'>
+			<SidebarContent>
+				<BrandNameLogo />
+				<SidebarGroup>
+					<SidebarGroupContent>
+						<SidebarMenu>
+							<Modal />
+							{items.map((item) => (
+								<SidebarMenuItem key={item.title}>
+									<SidebarMenuButton asChild>
+										<Link href={item.url}>
+											<item.icon />
+											<span>{item.title}</span>
+										</Link>
+									</SidebarMenuButton>
+								</SidebarMenuItem>
+							))}
+						</SidebarMenu>
+					</SidebarGroupContent>
+				</SidebarGroup>
+			</SidebarContent>
+		</Sidebar>
+>>>>>>> Stashed changes
 	);
 }

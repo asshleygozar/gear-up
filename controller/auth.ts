@@ -9,6 +9,7 @@ import {
 	getUserByEmail,
 } from '@/model/user';
 import { createSession } from '../lib/session';
+import { createDefaultAccount } from '@/model/transaction';
 
 export type ActionResponse = {
 	success: boolean;
@@ -141,6 +142,16 @@ export async function signUp(formData: FormData): Promise<ActionResponse> {
 				success: false,
 				message: 'Failed to create user',
 				error: 'Failed to create user',
+			};
+		}
+
+		const createAccount = await createDefaultAccount(createNewUser.user_id);
+
+		if (!createAccount) {
+			return {
+				success: false,
+				message: 'Failed to create default account',
+				error: 'Failed to create default account',
 			};
 		}
 
