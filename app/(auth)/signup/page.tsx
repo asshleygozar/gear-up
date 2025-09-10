@@ -126,7 +126,7 @@ export default function SignUpPage() {
 					/>
 				</FormGroup>
 				<Button
-					className='bg-brand text-white text-md font-inter font-medium hover:bg-blue-300'
+					className='bg-brand text-white text-md font-inter font-medium hover:bg-green-400'
 					disabled={isPending}
 					variant={'secondary'}
 					size={'lg'}
