@@ -12,7 +12,7 @@ import {
 import { Loader2Icon } from 'lucide-react';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
-import { signIn, ActionResponse } from '@/controller/auth';
+import { signIn, ActionResponse } from '@/server/auth';
 import { cn } from '@/lib/utils';
 
 const initialState: ActionResponse = {
