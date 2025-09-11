@@ -1,5 +1,4 @@
 import { useState } from 'react';
-import { AccountSelect } from './Accounts';
 import { Button } from './ui/button';
 import {
 	Dialog,
@@ -21,22 +20,26 @@ import {
 } from './ui/select';
 import { format } from 'date-fns';
 import { Textarea } from './ui/textarea';
-import { CategorySelect } from './Category';
-import { useCategory } from '@/context/useCategory';
+import { toast } from 'sonner';
+import { SelectAccount } from './Accounts';
 
 export default function Modal() {
-	const dateToday = format(new Date(), 'yyyy-MM-dd'); // Date select state
-	const { value } = useCategory(); // Category select state from useCategory context
+	// Date select state
+	const dateToday = format(new Date(), 'yyyy-MM-dd');
 
-	const [transaction, setTransaction] = useState({
+	// Initial state transaction
+	const initialTransaction = {
 		amount: '',
 		type: '',
 		account: '',
-		category: value,
+		category: '',
 		date: dateToday,
 		description: '',
-	});
+	};
+	// Store transaction field states
+	const [transaction, setTransaction] = useState(initialTransaction);
 
+	// Validates the amount field
 	const handleAmountChange = (event: React.ChangeEvent<HTMLInputElement>) => {
 		const value = event.target.value;
 		// Test if user input is number and only allow two decimal places
@@ -52,17 +55,55 @@ export default function Modal() {
 			setTransaction((prev) => ({ ...prev, amount: value }));
 		}
 	};
+
+	// Handle and validates the form submission
+	const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+		event.preventDefault();
+		if (
+			!transaction.amount.length ||
+			!transaction.account.length ||
+			!transaction.category.length ||
+			!transaction.date.length ||
+			!transaction.type.length
+		) {
+			toast(`Please fill out all the fields ${transaction.category}`);
+			return;
+		}
+
+		try {
+			const response = await fetch('/api/transaction', {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json',
+				},
+				body: JSON.stringify(transaction),
+			});
+			const data = await response.json();
+
+			toast(data.message);
+
+			if (data.success) {
+				setTransaction(initialTransaction);
+			}
+		} catch (error) {
+			console.error(error);
+		}
+	};
 	return (
 		<Dialog>
-			<Form>
-				<DialogTrigger asChild>
-					<Button variant='outline'>Add new transaction</Button>
-				</DialogTrigger>
-				<DialogContent className='sm:max-w-[425px]'>
-					<DialogHeader>
-						<DialogTitle>New Transaction</DialogTitle>
-						<DialogDescription>Enter new transaction</DialogDescription>
-					</DialogHeader>
+			<DialogTrigger asChild>
+				<Button variant='outline'>Add new transaction</Button>
+			</DialogTrigger>
+
+			<DialogContent className='sm:max-w-[425px]'>
+				<DialogHeader>
+					<DialogTitle>New Transaction</DialogTitle>
+					<DialogDescription>Enter new transaction</DialogDescription>
+				</DialogHeader>
+				<Form
+					onSubmit={handleSubmit}
+					className='grid gap-4'
+				>
 					<FormGroup className='grid gap-4'>
 						<FormGroup className='grid gap-3'>
 							<FormLabel htmlFor='amount'>Amount</FormLabel>
@@ -85,9 +126,9 @@ export default function Modal() {
 								<Select
 									name='type'
 									required
-									defaultValue={'expense'}
-									onValueChange={(typeValue) =>
-										setTransaction((prev) => ({ ...prev, type: typeValue }))
+									value={transaction.type}
+									onValueChange={(event) =>
+										setTransaction((prev) => ({ ...prev, type: event }))
 									}
 								>
 									<SelectTrigger className='w-[180px]'>
@@ -101,12 +142,33 @@ export default function Modal() {
 							</FormGroup>
 							<FormGroup className='grid gap-3'>
 								<FormLabel htmlFor='category'>Category</FormLabel>
-								<CategorySelect />
+								<Select
+									name='category'
+									required
+									value={transaction.category}
+									onValueChange={(event) =>
+										setTransaction((prev) => ({ ...prev, category: event }))
+									}
+								>
+									<SelectTrigger className='w-[180px]'>
+										<SelectValue placeholder='Category' />
+									</SelectTrigger>
+									<SelectContent>
+										<SelectItem value='food'>Food</SelectItem>
+										<SelectItem value='shopping'>Shopping</SelectItem>
+										<SelectItem value='transport'>Transport</SelectItem>
+									</SelectContent>
+								</Select>
 							</FormGroup>
 						</FormGroup>
 						<FormGroup className='grid gap-3'>
 							<FormLabel htmlFor='account'>Account</FormLabel>
-							<AccountSelect />
+							<SelectAccount
+								account={transaction.account}
+								onValueChange={(value) =>
+									setTransaction((prev) => ({ ...prev, account: value }))
+								}
+							/>
 						</FormGroup>
 						<FormGroup className='grid gap-3'>
 							<FormLabel
@@ -156,8 +218,8 @@ export default function Modal() {
 						</DialogClose>
 						<Button type='submit'>Save</Button>
 					</DialogFooter>
-				</DialogContent>
-			</Form>
+				</Form>
+			</DialogContent>
 		</Dialog>
 	);
 }
