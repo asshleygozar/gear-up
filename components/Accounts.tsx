@@ -9,7 +9,7 @@ import {
 	SelectValue,
 } from './ui/select';
 
-type Account = {
+type AccountProps = {
 	account_id: number;
 	account_name: string;
 	account_type: string;
@@ -18,8 +18,13 @@ type Account = {
 	total_expense: number;
 };
 
-export function AccountSelect() {
-	const [accounts, setAccounts] = useState<Account[]>([]);
+type SelectAccountProps = {
+	account: string;
+	onValueChange: (value: string) => void;
+};
+
+export function SelectAccount({ onValueChange, account }: SelectAccountProps) {
+	const [accounts, setAccounts] = useState<AccountProps[]>([]);
 
 	useEffect(() => {
 		const fetchAccounts = async () => {
@@ -32,7 +37,12 @@ export function AccountSelect() {
 	}, []);
 
 	return (
-		<Select name='account'>
+		<Select
+			name='account'
+			required
+			value={account}
+			onValueChange={onValueChange}
+		>
 			<SelectTrigger className='w-[180px]'>
 				<SelectValue placeholder='Select account' />
 			</SelectTrigger>
@@ -42,7 +52,10 @@ export function AccountSelect() {
 						key={account.account_id}
 						value={account.account_name}
 					>
-						{account.account_name}
+						{`${
+							account.account_name.charAt(0).toUpperCase() +
+							account.account_name.slice(1)
+						}`}
 					</SelectItem>
 				))}
 			</SelectContent>
