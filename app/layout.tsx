@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 import { Outfit, Quicksand } from 'next/font/google';
 import './globals.css';
-import { StorageProvider } from '@/context/useStorage';
+import { Toaster } from '@/components/ui/sonner';
 
 const outfit = Outfit({
 	variable: '--font-outfit',
@@ -26,7 +26,8 @@ export default function RootLayout({
 	return (
 		<html lang='en'>
 			<body className={`${outfit.variable} ${quickSand.variable} antialiased`}>
-				<StorageProvider>{children}</StorageProvider>
+				<Toaster position='top-center' />
+				{children}
 			</body>
 		</html>
 	);
