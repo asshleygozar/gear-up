@@ -1,4 +1,9 @@
-import { PrismaClient } from '@/lib/generated/prisma';
+import {
+	PrismaClient,
+	accounts,
+	users,
+	transaction_table,
+} from '@/lib/generated/prisma';
 import { cache } from 'react';
 import { getCurrentUser } from './user';
 import { TransactionTypes } from '@/app/api/transaction/route';
@@ -10,48 +15,129 @@ interface ModelResponse {
 	message: string;
 	error?: string;
 	errors?: Record<string, string[]>;
+	data?:
+		| accounts[]
+		| accounts
+		| users[]
+		| users
+		| transaction_table[]
+		| transaction_table
+		| number;
 }
 
 // Get the current user's account details from the database
-export const getUserAccount = cache(async () => {
-	const currentUser = await getCurrentUser();
-	const userAccount = await prisma.accounts.findMany({
-		where: {
-			user_id: currentUser?.user_id,
-		},
-	});
+export const getUserAccount = cache(async (): Promise<ModelResponse> => {
+	try {
+		const currentUser = await getCurrentUser();
 
-	return userAccount;
+		if (typeof currentUser === null || !currentUser) {
+			return {
+				success: false,
+				message: 'Cannot find current user',
+			};
+		}
+
+		const userAccount = await prisma.accounts.findMany({
+			where: {
+				user_id: currentUser.user_id,
+			},
+		});
+
+		if (typeof userAccount === null || !userAccount) {
+			return {
+				success: false,
+				message: 'Cannot find user accounts',
+			};
+		}
+
+		return {
+			success: true,
+			message: 'Accounts fetched successfully!',
+			data: userAccount,
+		};
+	} catch (error) {
+		console.error(error);
+		return {
+			success: false,
+			message: 'An error occured while fetching user accounts',
+			error: `${error}`,
+		};
+	}
 });
 
 // Creates a default account (Cash account) upon successful sign up
-export async function createDefaultAccount(id: number) {
-	const defaultAccount = await prisma.accounts.create({
-		data: {
-			account_name: 'Cash',
-			account_type: 'Cash',
-			total_balance: 0.0,
-			total_income: 0.0,
-			total_expense: 0.0,
-			user_id: id,
-		},
-	});
+export async function createDefaultAccount(id: number): Promise<ModelResponse> {
+	try {
+		const defaultAccount = await prisma.accounts.create({
+			data: {
+				account_name: 'cash',
+				account_type: 'cash',
+				total_balance: 0.0,
+				total_income: 0.0,
+				total_expense: 0.0,
+				user_id: id,
+			},
+		});
 
-	return defaultAccount;
+		if (!defaultAccount) {
+			return {
+				success: false,
+				message: 'Failed to create your account',
+				error: 'Failed to create your account',
+			};
+		}
+
+		return {
+			success: true,
+			message: 'Default account created successfully!',
+		};
+	} catch (error) {
+		console.error(error);
+		return {
+			success: false,
+			message: 'An error occured while creating your default account',
+			error: `${error}`,
+		};
+	}
 }
 
-export async function findAccount(userId: number, accountName: string) {
-	const account = await prisma.accounts.findFirst({
-		where: {
-			user_id: userId,
-			account_name: accountName,
-		},
-	});
+// Find user account
+export async function findAccount(
+	userId: number,
+	accountName: string
+): Promise<ModelResponse> {
+	try {
+		const account = await prisma.accounts.findFirst({
+			where: {
+				user_id: userId,
+				account_name: accountName,
+			},
+		});
 
-	return account;
+		if (!account || account === null) {
+			return {
+				success: false,
+				message: 'Failed to find user account. It may not exists',
+			};
+		}
+
+		return {
+			success: true,
+			message: 'User account found successfully!',
+			data: account.account_id,
+		};
+	} catch (error) {
+		console.error(error);
+		return {
+			success: false,
+			message: 'An error occured while finding user account',
+			error: `${error}`,
+		};
+	}
 }
 
-export async function insertTrasaction({
+// Creates new transaction
+export async function createTrasaction({
 	id,
 	accountId,
 	transaction,
@@ -93,13 +179,14 @@ export async function insertTrasaction({
 	}
 }
 
+// Fetch account income
 export async function getAccountIncome({
 	id,
 	accountId,
 }: {
 	id: number;
 	accountId: number;
-}): Promise<ModelResponse | number> {
+}): Promise<ModelResponse> {
 	try {
 		const income = await prisma.accounts.findUnique({
 			where: {
@@ -115,24 +202,30 @@ export async function getAccountIncome({
 			};
 		}
 
-		return Number(income.total_income);
+		return {
+			success: true,
+			message: 'Account income fetched successfully!',
+			data: Number(income.total_income),
+		};
 	} catch (error) {
 		console.error(error);
 		return {
 			success: false,
-			message: 'An error occured while fetching your income balance',
+			message:
+				'Database Error! An error occured while fetching your income balance',
 			error: 'Failed to fetch income data',
 		};
 	}
 }
 
+// Fetch account expense
 export async function getAccountExpense({
 	id,
 	accountId,
 }: {
 	id: number;
 	accountId: number;
-}): Promise<ModelResponse | number> {
+}): Promise<ModelResponse> {
 	try {
 		const expense = await prisma.accounts.findUnique({
 			where: {
@@ -148,18 +241,24 @@ export async function getAccountExpense({
 			};
 		}
 
-		return Number(expense.total_expense);
+		return {
+			success: false,
+			message: 'Account expense fetched successfully!',
+			data: Number(expense.total_expense),
+		};
 	} catch (error) {
 		console.error(error);
 
 		return {
 			success: false,
 			message: 'Failed to fetch expense data',
-			error: 'An error occured whil fetching your income balance data',
+			error:
+				'Database Error! An error occured whil fetching your income balance data',
 		};
 	}
 }
 
+// Update account income
 export async function updateAccountIncome({
 	id,
 	accountId,
@@ -168,18 +267,37 @@ export async function updateAccountIncome({
 	id: number;
 	accountId: number;
 	amount: number;
-}) {
-	const income = await prisma.accounts.update({
-		where: {
-			account_id: accountId,
-			user_id: id,
-		},
-		data: {
-			total_income: amount,
-		},
-	});
+}): Promise<ModelResponse> {
+	try {
+		const income = await prisma.accounts.update({
+			where: {
+				account_id: accountId,
+				user_id: id,
+			},
+			data: {
+				total_income: amount,
+			},
+		});
 
-	return income;
+		if (!income) {
+			return {
+				success: false,
+				message: 'Failed to update your account income',
+			};
+		}
+
+		return {
+			success: true,
+			message: 'Account income updated successfully!',
+		};
+	} catch (error) {
+		console.error(error);
+		return {
+			success: false,
+			message: 'Database Error! An error occured while updating your account',
+			error: `${error}`,
+		};
+	}
 }
 
 export async function updateAccountExpense({
@@ -190,20 +308,41 @@ export async function updateAccountExpense({
 	id: number;
 	accountId: number;
 	amount: number;
-}) {
-	const expense = await prisma.accounts.update({
-		where: {
-			account_id: accountId,
-			user_id: id,
-		},
-		data: {
-			total_expense: amount,
-		},
-	});
+}): Promise<ModelResponse> {
+	try {
+		const expense = await prisma.accounts.update({
+			where: {
+				account_id: accountId,
+				user_id: id,
+			},
+			data: {
+				total_expense: amount,
+			},
+		});
 
-	return expense;
+		if (!expense) {
+			return {
+				success: false,
+				message: 'Failed to update your expense account',
+			};
+		}
+
+		return {
+			success: true,
+			message: 'Account expense updated successfully!',
+		};
+	} catch (error) {
+		console.error(error);
+		return {
+			success: false,
+			message:
+				'Database Error! An error occured while updating your expense account',
+			error: `${error}`,
+		};
+	}
 }
 
+// Update total balance
 export async function updateTotalBalance({
 	id,
 	accountId,
