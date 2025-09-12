@@ -30,7 +30,7 @@ export function SelectAccount({ onValueChange, account }: SelectAccountProps) {
 		const fetchAccounts = async () => {
 			const response = await fetch('/api/accounts');
 			const data = await response.json();
-			setAccounts(data);
+			setAccounts(data.data);
 		};
 
 		fetchAccounts();
