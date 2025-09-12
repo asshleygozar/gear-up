@@ -4,7 +4,7 @@ import {
 	findAccount,
 	getAccountExpense,
 	getAccountIncome,
-	insertTrasaction,
+	createTrasaction,
 	updateAccountExpense,
 	updateAccountIncome,
 	updateTotalBalance,
@@ -54,7 +54,11 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
 	const userAccount = await findAccount(user.user_id, account);
 
 	// Checks if the user account exists
-	if (!userAccount || !userAccount.account_id) {
+	if (
+		!userAccount ||
+		!userAccount.data ||
+		typeof userAccount.data !== 'number'
+	) {
 		return NextResponse.json({
 			success: false,
 			message: 'Account not found',
@@ -73,9 +77,9 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
 	};
 
 	// Insert new transaction
-	const transaction = await insertTrasaction({
+	const transaction = await createTrasaction({
 		id: user.user_id,
-		accountId: userAccount.account_id,
+		accountId: userAccount.data,
 		transaction: transactionPayload,
 	});
 
@@ -89,7 +93,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
 	// Checks the type if income or expense and update the account balance
 	const updateAccount = await updateAccountTransaction({
 		userId: user.user_id,
-		accountId: userAccount.account_id,
+		accountId: userAccount.data,
 		amount: transactionPayload.amount,
 		type: transactionPayload.type,
 	});
@@ -104,7 +108,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
 	// Update current total balance
 	const currentBalance = await updateCurrentTotalBalance({
 		userId: user.user_id,
-		accountId: userAccount.account_id,
+		accountId: userAccount.data,
 	});
 
 	if (!currentBalance.success) {
@@ -114,6 +118,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
 		);
 	}
 
+	// Return success if all meets the validation
 	return NextResponse.json(
 		{
 			success: true,
