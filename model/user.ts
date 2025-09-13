@@ -1,29 +1,72 @@
-import { PrismaClient } from '@/lib/generated/prisma';
+import { PrismaClient, users } from '@/lib/generated/prisma';
 import { getSession } from '@/lib/session';
 import { hash, compare } from 'bcryptjs';
 import { cache } from 'react';
+import { ModelResponse } from './response';
 const prisma = new PrismaClient();
 
-// Check if user input email exists
-export const getUserByEmail = cache(async (email: string) => {
-	const userEmail = await prisma.users.findUnique({
-		where: {
-			email: email,
-		},
-	});
+// Get user by their email
+export const getUserByEmail = cache(
+	async (email: string): Promise<ModelResponse<string>> => {
+		try {
+			const userEmail = await prisma.users.findUnique({
+				where: {
+					email: email,
+				},
+			});
 
-	return userEmail?.email;
-});
+			if (!userEmail || userEmail.email === null) {
+				return {
+					success: false,
+					message: 'Failed to query email data',
+				};
+			}
+
+			return {
+				success: true,
+				message: 'Email queried successfully!',
+				data: userEmail.email,
+			};
+		} catch (error) {
+			console.error(error);
+			return {
+				success: false,
+				message: 'Query data failed',
+				error: `${error}`,
+			};
+		}
+	}
+);
 
 // Get user info (email and password)
-export async function getUserInfo(email: string) {
-	const userInfo = await prisma.users.findUnique({
-		where: {
-			email: email,
-		},
-	});
+export async function getUserInfo(email: string): Promise<ModelResponse<users>> {
+	try {
+		const userInfo = await prisma.users.findUnique({
+			where: {
+				email: email,
+			},
+		});
 
-	return userInfo;
+		if (!userInfo || userInfo === null || userInfo === undefined) {
+			return {
+				success: false,
+				message: 'Data could null or do not exists',
+			};
+		}
+
+		return {
+			success: true,
+			message: 'Data queried successfully!',
+			data: userInfo,
+		};
+	} catch (error) {
+		console.error(error);
+		return {
+			success: false,
+			message: 'Query failed',
+			error: `${error}`,
+		};
+	}
 }
 
 // Insert user info
@@ -32,26 +75,67 @@ export async function createUser(
 	username: string,
 	password: string,
 	dateAccountCreated: Date
-) {
-	const hashedPassword = await hash(password, 10);
-	const insertUser = await prisma.users.create({
-		data: {
-			email: email,
-			name: username,
-			password: hashedPassword,
-			user_account_date_created: dateAccountCreated,
-		},
-	});
+): Promise<ModelResponse<users>> {
+	try {
+		const hashedPassword = await hash(password, 10);
+		const insertUser = await prisma.users.create({
+			data: {
+				email: email,
+				name: username,
+				password: hashedPassword,
+				user_account_date_created: dateAccountCreated,
+			},
+		});
 
-	return insertUser;
+		if (!insertUser) {
+			return {
+				success: false,
+				message: 'Failed to created user',
+			};
+		}
+
+		return {
+			success: true,
+			message: 'User created successfully!',
+			data: insertUser,
+		};
+	} catch (error) {
+		console.error(error);
+		return {
+			success: false,
+			message: 'User creation failed',
+			error: `${error}`,
+		};
+	}
 }
 
 //Check if password is valid
 export async function verifyPassword(
 	password: string,
 	recordedPassword: string
-) {
-	return compare(password, recordedPassword);
+): Promise<ModelResponse> {
+	try {
+		const isPasswordValid = await compare(password, recordedPassword);
+
+		if (!isPasswordValid) {
+			return {
+				success: false,
+				message: 'Invalid password',
+			};
+		}
+
+		return {
+			success: true,
+			message: 'Password verified!',
+		};
+	} catch (error) {
+		console.error(error);
+		return {
+			success: false,
+			message: 'Verification failed',
+			error: `${error}`,
+		};
+	}
 }
 
 export const getCurrentUser = cache(async () => {

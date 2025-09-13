@@ -1,69 +1,52 @@
-import {
-	PrismaClient,
-	accounts,
-	users,
-	transaction_table,
-} from '@/lib/generated/prisma';
+import { accounts, PrismaClient } from '@/lib/generated/prisma';
 import { cache } from 'react';
 import { getCurrentUser } from './user';
 import { TransactionTypes } from '@/app/api/transaction/route';
+import { ModelResponse } from './response';
 
 const prisma = new PrismaClient();
 
-interface ModelResponse {
-	success: boolean;
-	message: string;
-	error?: string;
-	errors?: Record<string, string[]>;
-	data?:
-		| accounts[]
-		| accounts
-		| users[]
-		| users
-		| transaction_table[]
-		| transaction_table
-		| number;
-}
-
 // Get the current user's account details from the database
-export const getUserAccount = cache(async (): Promise<ModelResponse> => {
-	try {
-		const currentUser = await getCurrentUser();
+export const getUserAccount = cache(
+	async (): Promise<ModelResponse<accounts[]>> => {
+		try {
+			const currentUser = await getCurrentUser();
 
-		if (typeof currentUser === null || !currentUser) {
+			if (typeof currentUser === null || !currentUser) {
+				return {
+					success: false,
+					message: 'Cannot find current user',
+				};
+			}
+
+			const userAccount = await prisma.accounts.findMany({
+				where: {
+					user_id: currentUser.user_id,
+				},
+			});
+
+			if (typeof userAccount === null || !userAccount) {
+				return {
+					success: false,
+					message: 'Cannot find user accounts',
+				};
+			}
+
+			return {
+				success: true,
+				message: 'Accounts fetched successfully!',
+				data: userAccount,
+			};
+		} catch (error) {
+			console.error(error);
 			return {
 				success: false,
-				message: 'Cannot find current user',
+				message: 'An error occured while fetching user accounts',
+				error: `${error}`,
 			};
 		}
-
-		const userAccount = await prisma.accounts.findMany({
-			where: {
-				user_id: currentUser.user_id,
-			},
-		});
-
-		if (typeof userAccount === null || !userAccount) {
-			return {
-				success: false,
-				message: 'Cannot find user accounts',
-			};
-		}
-
-		return {
-			success: true,
-			message: 'Accounts fetched successfully!',
-			data: userAccount,
-		};
-	} catch (error) {
-		console.error(error);
-		return {
-			success: false,
-			message: 'An error occured while fetching user accounts',
-			error: `${error}`,
-		};
 	}
-});
+);
 
 // Creates a default account (Cash account) upon successful sign up
 export async function createDefaultAccount(id: number): Promise<ModelResponse> {
@@ -105,7 +88,7 @@ export async function createDefaultAccount(id: number): Promise<ModelResponse> {
 export async function findAccount(
 	userId: number,
 	accountName: string
-): Promise<ModelResponse> {
+): Promise<ModelResponse<number>> {
 	try {
 		const account = await prisma.accounts.findFirst({
 			where: {
@@ -179,6 +162,48 @@ export async function createTrasaction({
 	}
 }
 
+// User Id and User Account Id types
+type UserAccountProps = {
+	id: number;
+	accountId: number;
+};
+
+// Get current account balance
+export async function getAccountBalance({
+	id,
+	accountId,
+}: UserAccountProps): Promise<ModelResponse<number>> {
+	try {
+		const accountBalance = await prisma.accounts.findUnique({
+			where: {
+				user_id: id,
+				account_id: accountId,
+			},
+		});
+
+		if (!accountBalance || accountBalance.total_balance === null) {
+			return {
+				success: false,
+				message: 'Failed to fetch account balance it could be null',
+			};
+		}
+
+		return {
+			success: true,
+			message: 'Account balance fetched successfully!',
+			data: Number(accountBalance.total_balance),
+		};
+	} catch (error) {
+		console.error(error);
+		return {
+			success: false,
+			message: 'Failed to fetch account balance ',
+			error:
+				'Database error! An error occured while fetching you account balance',
+		};
+	}
+}
+
 // Fetch account income
 export async function getAccountIncome({
 	id,
@@ -186,7 +211,7 @@ export async function getAccountIncome({
 }: {
 	id: number;
 	accountId: number;
-}): Promise<ModelResponse> {
+}): Promise<ModelResponse<number>> {
 	try {
 		const income = await prisma.accounts.findUnique({
 			where: {
@@ -225,7 +250,7 @@ export async function getAccountExpense({
 }: {
 	id: number;
 	accountId: number;
-}): Promise<ModelResponse> {
+}): Promise<ModelResponse<number>> {
 	try {
 		const expense = await prisma.accounts.findUnique({
 			where: {
