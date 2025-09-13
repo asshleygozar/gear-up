@@ -43,6 +43,7 @@ const SignUpSchema = z
 export type SignInValidation = z.infer<typeof SignInSchema>;
 export type SignUpValidation = z.infer<typeof SignUpSchema>;
 
+// Sign in server action
 export async function signIn(formData: FormData): Promise<ActionResponse> {
 	try {
 		const data = {
@@ -61,7 +62,8 @@ export async function signIn(formData: FormData): Promise<ActionResponse> {
 		}
 
 		const user = await getUserInfo(data.email);
-		if (!user) {
+
+		if (!user || user.data === null || typeof user.data !== 'object') {
 			return {
 				success: false,
 				message: 'Invalid email or password',
@@ -73,10 +75,10 @@ export async function signIn(formData: FormData): Promise<ActionResponse> {
 
 		const isPasswordValid = await verifyPassword(
 			data.password,
-			user.password ?? ''
+			user.data.password ?? ''
 		);
 
-		if (!isPasswordValid) {
+		if (!isPasswordValid.success) {
 			return {
 				success: false,
 				message: 'Invalid username or password',
@@ -84,7 +86,7 @@ export async function signIn(formData: FormData): Promise<ActionResponse> {
 			};
 		}
 
-		await createSession(user.user_id);
+		await createSession(user.data.user_id);
 
 		return {
 			success: true,
@@ -100,6 +102,7 @@ export async function signIn(formData: FormData): Promise<ActionResponse> {
 	}
 }
 
+// Sign up server action
 export async function signUp(formData: FormData): Promise<ActionResponse> {
 	try {
 		const data = {
@@ -137,7 +140,12 @@ export async function signUp(formData: FormData): Promise<ActionResponse> {
 			data.password,
 			dateAccountCreated
 		);
-		if (!createNewUser) {
+		if (
+			!createNewUser.success ||
+			createNewUser.data === null ||
+			typeof createNewUser.data !== 'object' ||
+			createNewUser.data === undefined
+		) {
 			return {
 				success: false,
 				message: 'Failed to create user',
@@ -145,9 +153,11 @@ export async function signUp(formData: FormData): Promise<ActionResponse> {
 			};
 		}
 
-		const createAccount = await createDefaultAccount(createNewUser.user_id);
+		const createAccount = await createDefaultAccount(
+			createNewUser.data.user_id
+		);
 
-		if (!createAccount) {
+		if (!createAccount.success) {
 			return {
 				success: false,
 				message: 'Failed to create default account',
@@ -155,7 +165,7 @@ export async function signUp(formData: FormData): Promise<ActionResponse> {
 			};
 		}
 
-		await createSession(createNewUser.user_id);
+		await createSession(createNewUser.data.user_id);
 
 		return {
 			success: true,
