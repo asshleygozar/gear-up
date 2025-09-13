@@ -9,13 +9,7 @@ import {
 	updateAccountIncome,
 	updateTotalBalance,
 } from '@/model/transaction';
-
-type ServerResponse = {
-	success: boolean;
-	message: string;
-	error?: string;
-	errors?: Record<string, string[]>;
-};
+import { ServerResponse } from '@/server/response';
 
 export type TransactionTypes = {
 	amount: number;
