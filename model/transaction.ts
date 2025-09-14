@@ -1,6 +1,6 @@
 import { accounts, PrismaClient } from '@/lib/generated/prisma';
 import { cache } from 'react';
-import { getCurrentUser } from './user';
+import { getCurrentUserSession } from './user';
 import { TransactionTypes } from '@/app/api/transaction/route';
 import { ModelResponse } from './response';
 
@@ -10,9 +10,9 @@ const prisma = new PrismaClient();
 export const getUserAccount = cache(
 	async (): Promise<ModelResponse<accounts[]>> => {
 		try {
-			const currentUser = await getCurrentUser();
+			const currentUser = await getCurrentUserSession();
 
-			if (typeof currentUser === null || !currentUser) {
+			if (typeof currentUser.data === null || !currentUser.data) {
 				return {
 					success: false,
 					message: 'Cannot find current user',
@@ -21,7 +21,7 @@ export const getUserAccount = cache(
 
 			const userAccount = await prisma.accounts.findMany({
 				where: {
-					user_id: currentUser.user_id,
+					user_id: currentUser.data.user_id,
 				},
 			});
 
