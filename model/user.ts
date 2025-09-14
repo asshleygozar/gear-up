@@ -5,6 +5,48 @@ import { cache } from 'react';
 import { ModelResponse } from './response';
 const prisma = new PrismaClient();
 
+// Gte current user session
+export const getCurrentUserSession = cache(
+	async (): Promise<ModelResponse<users>> => {
+		try {
+			const cookieSession = await getSession();
+
+			if (!cookieSession || cookieSession === null) {
+				return {
+					success: false,
+					message: 'No current user session',
+				};
+			}
+
+			const result = await prisma.users.findUnique({
+				where: {
+					user_id: cookieSession.userId,
+				},
+			});
+
+			if (!result || result.user_id === null || result.user_id === undefined) {
+				return {
+					success: false,
+					message: 'No current user session found',
+				};
+			}
+
+			return {
+				success: true,
+				message: 'Session fetching successful!',
+				data: result,
+			};
+		} catch (error) {
+			console.error(error);
+			return {
+				success: false,
+				message: 'Query failed',
+				error: `${error}`,
+			};
+		}
+	}
+);
+
 // Get user by their email
 export const getUserByEmail = cache(
 	async (email: string): Promise<ModelResponse<string>> => {
@@ -39,7 +81,9 @@ export const getUserByEmail = cache(
 );
 
 // Get user info (email and password)
-export async function getUserInfo(email: string): Promise<ModelResponse<users>> {
+export async function getUserInfo(
+	email: string
+): Promise<ModelResponse<users>> {
 	try {
 		const userInfo = await prisma.users.findUnique({
 			where: {
@@ -138,21 +182,3 @@ export async function verifyPassword(
 	}
 }
 
-export const getCurrentUser = cache(async () => {
-	const cookieSession = await getSession();
-
-	if (!cookieSession) return null;
-
-	try {
-		const result = await prisma.users.findUnique({
-			where: {
-				user_id: cookieSession.userId,
-			},
-		});
-
-		return result || null;
-	} catch (error) {
-		console.error(error);
-		return null;
-	}
-});
