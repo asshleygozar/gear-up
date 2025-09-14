@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getCurrentUser } from '@/model/user';
+import { getCurrentUserSession } from '@/model/user';
 import {
 	findAccount,
 	getAccountExpense,
@@ -22,12 +22,12 @@ export type TransactionTypes = {
 
 export async function POST(request: NextRequest): Promise<NextResponse> {
 	const body = await request.json();
-	const user = await getCurrentUser();
+	const user = await getCurrentUserSession();
 
 	// destructure to get the incoming payload
 	const { amount, type, account, category, date, description } = body;
 
-	if (!user || !user.user_id) {
+	if (!user || !user.data?.user_id) {
 		return NextResponse.json(
 			{
 				success: false,
@@ -45,7 +45,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
 	const parseDate = new Date(date);
 
 	// Find the account id number
-	const userAccount = await findAccount(user.user_id, account);
+	const userAccount = await findAccount(user.data.user_id, account);
 
 	// Checks if the user account exists
 	if (
@@ -72,7 +72,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
 
 	// Insert new transaction
 	const transaction = await createTrasaction({
-		id: user.user_id,
+		id: user.data.user_id,
 		accountId: userAccount.data,
 		transaction: transactionPayload,
 	});
@@ -86,7 +86,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
 
 	// Checks the type if income or expense and update the account balance
 	const updateAccount = await updateAccountTransaction({
-		userId: user.user_id,
+		userId: user.data.user_id,
 		accountId: userAccount.data,
 		amount: transactionPayload.amount,
 		type: transactionPayload.type,
@@ -101,7 +101,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
 
 	// Update current total balance
 	const currentBalance = await updateCurrentTotalBalance({
-		userId: user.user_id,
+		userId: user.data.user_id,
 		accountId: userAccount.data,
 	});
 
