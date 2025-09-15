@@ -2,6 +2,7 @@ import { LeftSidebar } from '@/components/LeftSidebar';
 import { SidebarProvider, SidebarTrigger } from '@/components/ui/sidebar';
 import { getCurrentUser } from '@/model/user';
 import { redirect } from 'next/navigation';
+import QueryProvider from './provider';
 
 const DashboardLayout = async ({ children }: { children: React.ReactNode }) => {
 	const getUser = await getCurrentUser();
@@ -9,13 +10,15 @@ const DashboardLayout = async ({ children }: { children: React.ReactNode }) => {
 		redirect('/signin');
 	}
 	return (
-		<SidebarProvider>
-			<LeftSidebar />
-			<main className='h-full w-full'>
-				<SidebarTrigger />
-				{children}
-			</main>
-		</SidebarProvider>
+		<QueryProvider>
+			<SidebarProvider>
+				<LeftSidebar />
+				<main className='h-full w-full'>
+					<SidebarTrigger />
+					{children}
+				</main>
+			</SidebarProvider>
+		</QueryProvider>
 	);
 };
 
