@@ -4,7 +4,6 @@ import * as z from 'zod';
 import {
 	createUser,
 	verifyPassword,
-	getCurrentUser,
 	getUserInfo,
 	getUserByEmail,
 } from '@/model/user';
@@ -178,20 +177,5 @@ export async function signUp(formData: FormData): Promise<ActionResponse> {
 			message: 'An error occurred while creating your account',
 			error: 'An error occured while creating your account',
 		};
-	}
-}
-
-export async function getCurrentUsername() {
-	try {
-		const result = await getCurrentUser();
-
-		if (!result) {
-			return null;
-		}
-
-		return result.name;
-	} catch (error) {
-		console.error(error);
-		return null;
 	}
 }
