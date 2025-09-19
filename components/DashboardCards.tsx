@@ -10,9 +10,13 @@ import {
 	CardTitle,
 } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
-import { getNetBalance } from '@/server/balance';
+import {
+	getNetBalance,
+	getTotalExpenses,
+	getTotalIncomes,
+} from '@/server/balance';
 
-export default function NetBalance() {
+export function NetBalance() {
 	const fetchData = async () => {
 		const data = await getNetBalance();
 		if (!data.success || data.data === null) {
@@ -35,6 +39,82 @@ export default function NetBalance() {
 		<Card className='relative'>
 			<CardHeader>
 				<CardTitle>Net Balance</CardTitle>
+			</CardHeader>
+			<CardContent>
+				{isPending ? (
+					<Skeleton className='h-10 w-full' />
+				) : (
+					<p className='text-3xl'>$ {total}</p>
+				)}
+			</CardContent>
+			<CardFooter className='absolute bottom-5 right-1'>
+				{format(new Date(), 'MMMM dd, yyyy')}
+			</CardFooter>
+		</Card>
+	);
+}
+
+export function TotalIncome() {
+	const fetchData = async () => {
+		const data = await getTotalIncomes();
+		if (!data.success || data.data === null) {
+			return [];
+		}
+
+		return Array.isArray(data.data) ? data.data : [];
+	};
+
+	const { data = [], isPending } = useQuery({
+		queryKey: ['total-income'],
+		queryFn: fetchData,
+	});
+
+	const total = Array.isArray(data)
+		? data.reduce((acc, val) => acc + val, 0)
+		: 0;
+
+	return (
+		<Card className='relative'>
+			<CardHeader>
+				<CardTitle>Total Income</CardTitle>
+			</CardHeader>
+			<CardContent>
+				{isPending ? (
+					<Skeleton className='h-10 w-full' />
+				) : (
+					<p className='text-3xl'>$ {total}</p>
+				)}
+			</CardContent>
+			<CardFooter className='absolute bottom-5 right-1'>
+				{format(new Date(), 'MMMM dd, yyyy')}
+			</CardFooter>
+		</Card>
+	);
+}
+
+export function TotalExpense() {
+	const fetchData = async () => {
+		const data = await getTotalExpenses();
+		if (!data.success || data.data === null) {
+			return [];
+		}
+
+		return Array.isArray(data.data) ? data.data : [];
+	};
+
+	const { data = [], isPending } = useQuery({
+		queryKey: ['total-expense'],
+		queryFn: fetchData,
+	});
+
+	const total = Array.isArray(data)
+		? data.reduce((acc, val) => acc + val, 0)
+		: 0;
+
+	return (
+		<Card className='relative'>
+			<CardHeader>
+				<CardTitle>Total Expense</CardTitle>
 			</CardHeader>
 			<CardContent>
 				{isPending ? (
