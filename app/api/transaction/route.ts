@@ -4,11 +4,11 @@ import {
 	findAccount,
 	getAccountExpense,
 	getAccountIncome,
-	createTrasaction,
 	updateAccountExpense,
 	updateAccountIncome,
 	updateTotalBalance,
-} from '@/model/transaction';
+} from '@/model/accounts';
+import { createTransaction } from '@/model/transaction';
 import { ServerResponse } from '@/server/response';
 
 export type TransactionTypes = {
@@ -71,7 +71,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
 	};
 
 	// Insert new transaction
-	const transaction = await createTrasaction({
+	const transaction = await createTransaction({
 		id: user.data.user_id,
 		accountId: userAccount.data,
 		transaction: transactionPayload,
