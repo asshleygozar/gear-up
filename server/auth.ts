@@ -8,7 +8,7 @@ import {
 	getUserByEmail,
 } from '@/model/user';
 import { createSession } from '../lib/session';
-import { createDefaultAccount } from '@/model/transaction';
+import { createDefaultAccount } from '@/model/accounts';
 
 export type ActionResponse = {
 	success: boolean;

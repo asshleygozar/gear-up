@@ -1,4 +1,4 @@
-import { getUserAccount } from '@/model/transaction';
+import { getUserAccount } from '@/model/accounts';
 import { NextResponse } from 'next/server';
 
 export async function GET() {
