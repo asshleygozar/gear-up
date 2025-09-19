@@ -10,12 +10,15 @@ import {
 	CardTitle,
 } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
+import { getNetBalance } from '@/server/balance';
 
 export default function NetBalance() {
 	const fetchData = async () => {
-		const response = await fetch('/api/balance');
-		if (!response.ok) return [];
-		const data = await response.json();
+		const data = await getNetBalance();
+		if (!data.success || data.data === null) {
+			return [];
+		}
+
 		return Array.isArray(data.data) ? data.data : [];
 	};
 
@@ -25,7 +28,7 @@ export default function NetBalance() {
 	});
 
 	const total = Array.isArray(data)
-		? data.reduce((acc, val) => acc + Number(val ?? 0), 0)
+		? data.reduce((acc, val) => acc + val, 0)
 		: 0;
 
 	return (
