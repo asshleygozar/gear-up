@@ -9,28 +9,28 @@ datasource db {
 }
 
 model users {
-  user_id                   Int                 @id @default(autoincrement())
-  email                     String              @unique @db.VarChar(255)
-  name                      String?             @db.VarChar(255)
-  password                  String?             @db.VarChar(255)
-  user_account_date_created DateTime?           @db.Timestamp(6)
+  user_id                   Int            @id @default(autoincrement())
+  email                     String         @unique @db.VarChar(255)
+  name                      String?        @db.VarChar(255)
+  password                  String?        @db.VarChar(255)
+  user_account_date_created DateTime?      @db.Timestamp(6)
   accounts                  accounts[]
-  transaction_table         transaction_table[]
+  transactions              transactions[]
 }
 
 model accounts {
-  account_id        Int                 @id @default(autoincrement())
-  account_name      String?             @db.VarChar(255)
-  account_type      String?             @db.VarChar(255)
-  total_balance     Decimal?            @db.Decimal(10, 2)
-  total_income      Decimal?            @db.Decimal(10, 2)
-  total_expense     Decimal?            @db.Decimal(10, 2)
-  user_id           Int
-  users             users               @relation(fields: [user_id], references: [user_id], onDelete: NoAction, onUpdate: NoAction)
-  transaction_table transaction_table[]
+  account_id    Int            @id @default(autoincrement())
+  account_name  String?        @db.VarChar(255)
+  account_type  String?        @db.VarChar(255)
+  total_balance Decimal?       @db.Decimal(10, 2)
+  total_income  Decimal?       @db.Decimal(10, 2)
+  total_expense Decimal?       @db.Decimal(10, 2)
+  user_id       Int
+  users         users          @relation(fields: [user_id], references: [user_id], onDelete: NoAction, onUpdate: NoAction)
+  transactions  transactions[]
 }
 
-model transaction_table {
+model transactions {
   transaction_id          Int       @id @default(autoincrement())
   transaction_category    String?   @db.VarChar(255)
   transaction_amount      Decimal?  @db.Decimal(10, 2)
