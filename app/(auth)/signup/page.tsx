@@ -8,7 +8,7 @@ import {
 } from '@/components/ui/Form';
 import { Loader2Icon } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { ActionResponse, signUp } from '@/server/auth';
+import { ActionResponse, signUp } from '@/actions/auth';
 import { useRouter } from 'next/navigation';
 import { useActionState } from 'react';
 import { cn } from '@/lib/utils';
