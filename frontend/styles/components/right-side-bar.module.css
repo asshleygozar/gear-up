@@ -1,0 +1,28 @@
+.container {
+	height: 100vh;
+	padding: 0.5rem 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+	box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 4px;
+}
+.container > .accounts {
+    overflow: auto;
+	display: flex;
+    flex-direction: column;
+    align-items: center;
+	gap: 0.9rem;
+}
+
+.accounts > div {
+    height: 9.375rem;
+    gap: 1rem;
+}
+
+.container > h1 {
+	text-align: center;
+	font-family: var(--font-quick-sand);
+	font-size: 2rem;
+	font-weight: bold;
+	color: var(--accent-red);
+}
