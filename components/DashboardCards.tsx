@@ -14,7 +14,7 @@ import {
 	getNetBalance,
 	getTotalExpenses,
 	getTotalIncomes,
-} from '@/server/balance';
+} from '@/actions/balance';
 
 export function NetBalance() {
 	const fetchData = async () => {

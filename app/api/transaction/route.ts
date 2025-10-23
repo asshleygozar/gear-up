@@ -9,7 +9,7 @@ import {
 	updateTotalBalance,
 } from '@/model/accounts';
 import { createTransaction } from '@/model/transaction';
-import { ServerResponse } from '@/server/response';
+import { ServerResponse } from '@/actions/response';
 
 export type TransactionTypes = {
 	amount: number;
