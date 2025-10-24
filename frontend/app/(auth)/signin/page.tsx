@@ -12,13 +12,13 @@ import {
 import { Loader2Icon } from 'lucide-react';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
-import { signIn, ActionResponse } from '@/actions/auth';
+import { ActionResponse } from '@/actions/auth';
 import { cn } from '@/lib/utils';
 
 const initialState: ActionResponse = {
 	success: false,
 	message: '',
-	error: undefined,
+	error: '',
 };
 
 export default function SignInPage() {
@@ -29,14 +29,26 @@ export default function SignInPage() {
 		formData: FormData
 	) => {
 		try {
-			const result = await signIn(formData);
+			const data = {
+				email: formData.get('email'),
+				password: formData.get('password'),
+			};
+			const result = await fetch('http://localhost:3000/auth/signin/', {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json',
+				},
+				body: JSON.stringify(data),
+			});
 
-			if (result.success) {
+			const response = await result.json();
+
+			if (response.success) {
 				// Maybe add toast here like success
 				router.push('/dashboard');
 			}
 
-			return result;
+			return response;
 		} catch (error) {
 			console.error(error);
 			return {
