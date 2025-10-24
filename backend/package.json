@@ -2,6 +2,7 @@
 	"name": "backend",
 	"version": "1.0.0",
 	"main": "index.js",
+	"type": "module",
 	"scripts": {
 		"db:migrate": "npx prisma migrate dev --name init",
 		"db:pull": "npx prisma db pull"
@@ -11,6 +12,7 @@
 	"license": "ISC",
 	"description": "",
 	"devDependencies": {
+		"@types/express": "^5.0.4",
 		"@types/node": "^24.9.1",
 		"nodemon": "^3.1.10",
 		"prisma": "^6.18.0",
@@ -19,6 +21,8 @@
 	},
 	"dependencies": {
 		"@prisma/client": "^6.18.0",
-		"dotenv": "^17.2.3"
+		"dotenv": "^17.2.3",
+		"express": "^5.1.0",
+		"zod": "^4.1.12"
 	}
 }
