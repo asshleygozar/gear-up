@@ -5,24 +5,38 @@
 	"type": "module",
 	"scripts": {
 		"db:migrate": "npx prisma migrate dev --name init",
-		"db:pull": "npx prisma db pull"
+		"db:pull": "npx prisma db pull",
+		"dev": "npx tsx --watch src/app.ts",
+		"start": "node dist/app.js",
+		"build": "tsc"
 	},
 	"keywords": [],
 	"author": "",
 	"license": "ISC",
 	"description": "",
+	"imports": {
+		"#*": "./src/*"
+	},
 	"devDependencies": {
+		"@tsconfig/node22": "^22.0.2",
+		"@types/cookie-parser": "^1.4.10",
+		"@types/cors": "^2.8.19",
 		"@types/express": "^5.0.4",
 		"@types/node": "^24.9.1",
 		"nodemon": "^3.1.10",
 		"prisma": "^6.18.0",
 		"ts-node": "^10.9.2",
+		"tsx": "^4.20.6",
 		"typescript": "^5.9.3"
 	},
 	"dependencies": {
 		"@prisma/client": "^6.18.0",
+		"bcryptjs": "^3.0.2",
+		"cookie-parser": "^1.4.7",
+		"cors": "^2.8.5",
 		"dotenv": "^17.2.3",
 		"express": "^5.1.0",
+		"jose": "^6.1.0",
 		"zod": "^4.1.12"
 	}
 }
