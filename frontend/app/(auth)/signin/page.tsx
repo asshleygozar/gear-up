@@ -33,7 +33,7 @@ export default function SignInPage() {
 				email: formData.get('email'),
 				password: formData.get('password'),
 			};
-			const result = await fetch('http://localhost:3000/auth/signin/', {
+			const result = await fetch('http://localhost:8080/auth/signin/', {
 				method: 'POST',
 				headers: {
 					'Content-Type': 'application/json',

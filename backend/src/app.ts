@@ -1,15 +1,15 @@
 import express from 'express';
 import cookieParse from 'cookie-parser';
-import user from '#routes/auth.js';
+import user from './routes/auth';
 import cors from 'cors';
 
 const app = express();
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 8080;
 
 app.use(express.json());
 app.use(
 	cors({
-		origin: 'http://localhost:3001',
+		origin: 'http://localhost:3000',
 	})
 );
 app.use(express.urlencoded({ extended: true }));
