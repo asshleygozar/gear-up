@@ -12,7 +12,6 @@ import {
 } from '@/components/ui/sidebar';
 import Link from 'next/link';
 import { BrandNameLogo } from './Brand';
-import Modal from './Modal';
 import { CategoryProvider } from '@/context/useCategory';
 
 // Menu items.
@@ -47,7 +46,6 @@ export function LeftSidebar() {
 					<BrandNameLogo />
 					<SidebarGroup>
 						<SidebarGroupContent>
-							<Modal />
 							<SidebarMenu>
 								{items.map((item) => (
 									<SidebarMenuItem key={item.title}>
