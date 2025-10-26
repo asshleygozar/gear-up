@@ -5,6 +5,34 @@ import { ModelResponse } from '../utils/response.js';
 
 const prisma = new PrismaClient();
 
+export async function createUser(data: users): Promise<ModelResponse> {
+	try {
+		const user = await prisma.users.create({
+			data,
+		});
+
+		if (!user) {
+			return {
+				success: false,
+				message: 'Failed to create user',
+				error: 'Database error',
+			};
+		}
+
+		return {
+			success: true,
+			message: 'User created successfully!',
+		};
+	} catch (error) {
+		console.error('Database error: ', error);
+		return {
+			success: false,
+			message: 'Failed to create user',
+			error: 'Database error',
+		};
+	}
+}
+
 // Query user info
 type UserCredentials = Pick<users, 'email' | 'password' | 'user_id'>;
 export async function getUserInfo(
