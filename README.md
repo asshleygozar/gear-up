@@ -42,61 +42,15 @@ An organized and accesible financial manager dedicated to track personal finance
 
 - **Backend**
 
-  - Next.js API route
+  - ExpressJs
+  - NodeJs
   - Zod (For form data validation)
   - Prisma (For ORM)
   - Postgresql (For data persistence)
-
-- **Resources and API**
-
-  - [date-fns](https://github.com/date-fns/date-fns) for date formatting
 
 ## Prerequisites
 
 - Node.js >= 22.14.0
 - Postgresql installed locally or via docker
-
-## Installation and Setup
-
-- **Install dependencies**
-
-  ```
-    # Clone the repository
-    git clone https://github.com/asshleygozar/gear-up.git
-
-    # Go to the project directory
-    cd gear-up
-
-    # Install dependencies
-    npm install
-  ```
-
-- **Set up local database**
-
-  - use postgresql for local database
-
-- **Change environment variables**
-
-  ```
-    DATABASE_URL=<postgresql://user/:password@localhost:5432/dbname>
-    JWT_SECRET_TOKEN=<your-own-jwt-token>
-  ```
-
-- **Generate prisma schema**
-
-  ```
-    # For initializing prisma schema with env config
-    npx prisma init
-
-    # Migrate current database model to your local database
-    npx prisma migrate dev --name init
-  ```
-
-- **Run the application**
-
-  ```
-    # Run nextjs application
-    npm run dev
-  ```
 
 ©2025 Asshley Gozar All rights reserved
