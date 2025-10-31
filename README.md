@@ -42,8 +42,8 @@ An organized and accesible financial manager dedicated to track personal finance
 
 - **Backend**
 
-  - ExpressJs
-  - NodeJs
+  - Express.js
+  - Node.js
   - Zod (For form data validation)
   - Prisma (For ORM)
   - Postgresql (For data persistence)
