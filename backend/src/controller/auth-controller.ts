@@ -1,5 +1,4 @@
 import { createUser, getUserInfo, verifyPassword } from "../model/user.js";
-import { SignInSchema } from "../lib/auth.js";
 import { Request, Response } from "express";
 import { createSession } from "../lib/session.js";
 import { isUsernameExists as queryUsername } from "../model/user.js";
