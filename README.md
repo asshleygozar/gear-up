@@ -44,13 +44,13 @@ An organized and accesible financial manager dedicated to track personal finance
 
   - Express.js
   - Node.js
+  - Typescript
   - Zod (For form data validation)
   - Prisma (For ORM)
   - Postgresql (For data persistence)
 
 ## Prerequisites
 
-- Node.js >= 22.14.0
-- Postgresql installed locally or via docker
+- Node.js >= 23.6.0 (For native typescript support)
 
 ©2025 Asshley Gozar All rights reserved
