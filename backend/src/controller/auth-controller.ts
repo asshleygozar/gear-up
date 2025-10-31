@@ -6,32 +6,11 @@ import { isUsernameExists as queryUsername } from "../model/user.js";
 
 export async function signIn(request: Request, response: Response) {
     try {
-        if (!request.body) {
-            return response.status(400).json({
-                success: false,
-                message: "No request body provided",
-                error: "Invalid request",
-            });
-        }
-
         const { email, password } = request.body;
         const data = {
             email: email as string,
             password: password as string,
         };
-
-        const validation = SignInSchema.safeParse(data);
-
-        if (!validation.success) {
-            return response
-                .json({
-                    success: false,
-                    message: "Validation failed",
-                    error: "Invalid format",
-                    errors: validation.error.flatten().fieldErrors,
-                })
-                .end();
-        }
 
         const user = await getUserInfo(data.email);
 
