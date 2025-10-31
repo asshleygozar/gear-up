@@ -12,10 +12,10 @@ import {
 import { Loader2Icon } from 'lucide-react';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
-import { ActionResponse } from '@/actions/auth';
 import { cn } from '@/lib/utils';
+import { APIResponse } from '@/utils/type';
 
-const initialState: ActionResponse = {
+const initialState: APIResponse = {
 	success: false,
 	message: '',
 	error: '',
@@ -24,16 +24,13 @@ const initialState: ActionResponse = {
 export default function SignInPage() {
 	const router = useRouter();
 
-	const handleSubmit = async (
-		prevState: ActionResponse,
-		formData: FormData
-	) => {
+	const handleSubmit = async (prevState: APIResponse, formData: FormData) => {
 		try {
 			const data = {
 				email: formData.get('email'),
 				password: formData.get('password'),
 			};
-			const result = await fetch('http://localhost:8080/auth/signin/', {
+			const result = await fetch('http://localhost:8080/api/auth/signin/', {
 				method: 'POST',
 				headers: {
 					'Content-Type': 'application/json',
@@ -61,10 +58,10 @@ export default function SignInPage() {
 		}
 	};
 
-	const [state, formAction, isPending] = useActionState<
-		ActionResponse,
-		FormData
-	>(handleSubmit, initialState);
+	const [state, formAction, isPending] = useActionState<APIResponse, FormData>(
+		handleSubmit,
+		initialState
+	);
 
 	return (
 		<div className='h-screen flex justify-center items-center'>
