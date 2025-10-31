@@ -2,11 +2,13 @@ import express from "express";
 import cookieParse from "cookie-parser";
 import user from "./routes/auth-route";
 import cors from "cors";
+import helmet from "helmet";
 
 const app = express();
 const PORT = process.env.PORT || 8080;
 
 app.use(express.json());
+app.use(helmet());
 app.use(
     cors({
         origin: "http://localhost:3000",
