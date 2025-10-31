@@ -34,7 +34,7 @@ model transactions {
 
 model users {
   email                     String         @unique @db.VarChar(255)
-  password                  String?        @db.VarChar(255)
+  password                  String        @db.VarChar(255)
   first_name                String?        @db.VarChar(255)
   last_name                 String?        @db.VarChar(255)
   username                  String?        @unique @db.VarChar(255)

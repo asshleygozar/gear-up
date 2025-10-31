@@ -22,7 +22,7 @@ export async function signIn(request: Request, response: Response) {
 
         const isPasswordValid = await verifyPassword({
             password: data.password,
-            recordedPassword: user.data.password ?? "",
+            recordedPassword: user.data.password,
         });
 
         if (!isPasswordValid.success)
