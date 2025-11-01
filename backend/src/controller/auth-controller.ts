@@ -1,7 +1,7 @@
-import { createUser, getUserInfo, verifyPassword } from "../model/user.js";
+import { createUser, getUserInfo, verifyPassword } from "../model/user.ts";
 import { Request, Response } from "express";
-import { createSession } from "../lib/session.js";
-import { isUsernameExists as queryUsername } from "../model/user.js";
+import { createSession } from "../lib/session.ts";
+import { isUsernameExists as queryUsername } from "../model/user.ts";
 
 export async function signIn(request: Request, response: Response) {
     try {
