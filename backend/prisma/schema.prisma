@@ -33,13 +33,14 @@ model transactions {
 }
 
 model users {
-  email                     String         @unique @db.VarChar(255)
-  password                  String        @db.VarChar(255)
-  first_name                String?        @db.VarChar(255)
-  last_name                 String?        @db.VarChar(255)
-  username                  String?        @unique @db.VarChar(255)
-  user_account_date_created DateTime?      @db.Timestamp(6)
-  user_id                   Int            @id @default(autoincrement())
-  accounts                  accounts[]
-  transactions              transactions[]
+  email        String         @unique @db.VarChar(255)
+  password     String         @db.VarChar(255)
+  first_name   String?        @db.VarChar(255)
+  last_name    String?        @db.VarChar(255)
+  username     String         @unique @db.VarChar(255)
+  created_at   DateTime       @default(now()) @db.Timestamp(6)
+  updated_at   DateTime       @default(now()) @db.Timestamp(6)
+  user_id      Int            @id @default(autoincrement())
+  accounts     accounts[]
+  transactions transactions[]
 }
