@@ -1,5 +1,5 @@
 import "dotenv/config.js";
-import { PrismaClient, users } from "../../generated/prisma/client.ts";
+import { PrismaClient, users } from "#lib/generated/prisma/client.ts";
 import { hash, compare } from "bcryptjs";
 import { ModelResponse } from "#utils/response.ts";
 
