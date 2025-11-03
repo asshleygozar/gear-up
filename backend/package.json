@@ -7,6 +7,7 @@
         "db:migrate": "npx prisma migrate dev --name init",
         "db:pull": "npx prisma db pull",
         "db:generate": "npx prisma generate",
+        "db:seed": "npx tsx src/db/seed.ts",
         "dev": "cross-env APP_STAGE=dev npx tsx --watch src/app.ts",
         "test": "cross-env APP_STAGE=test npx tsx --watch src/app.ts",
         "start": "node dist/app.js",
