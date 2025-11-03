@@ -1,7 +1,7 @@
 import "dotenv/config.js";
-import { PrismaClient, users } from "#lib/generated/prisma/client.ts";
-import { hash, compare } from "bcryptjs";
+import { PrismaClient, users } from "#db/generated/prisma/client.ts";
 import { ModelResponse } from "#utils/response.ts";
+import { compare } from "bcryptjs";
 
 const prisma = new PrismaClient();
 

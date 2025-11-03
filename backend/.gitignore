@@ -3,5 +3,5 @@ node_modules
 .env
 .env.test
 /node_modules
-/src/lib/generated/prisma
+/src/db/generated/prisma
 /dist
