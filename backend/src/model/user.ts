@@ -1,9 +1,36 @@
 import "dotenv/config.js";
-import { PrismaClient, users } from "#db/generated/prisma/client.ts";
+import { users } from "@prisma/client";
 import { ModelResponse } from "#utils/response.ts";
 import { compare } from "bcryptjs";
+import { prisma } from "#lib/prisma.ts";
 
-const prisma = new PrismaClient();
+export async function createManyUser(...data: users[]): Promise<ModelResponse> {
+    try {
+        const users = await prisma.users.createMany({
+            data,
+        });
+
+        if (!users) {
+            return {
+                success: false,
+                message: "Failed to create many users",
+                error: "Something went wrong while creating users",
+            };
+        }
+
+        return {
+            success: true,
+            message: "Users created successfully!",
+        };
+    } catch (error) {
+        console.error("Database error: ", error);
+        return {
+            success: false,
+            message: "Failed to create many user",
+            error: "Something went wrong with the database",
+        };
+    }
+}
 
 export async function createUser(data: users): Promise<ModelResponse<users>> {
     try {
