@@ -25,7 +25,8 @@ app.get("/health", (req, res) => {
         service: "GearUp API",
     });
 });
-app.use("/api/auth", user);
+
+app.use("/auth", user);
 
 app.listen(env.PORT, () => {
     console.log(`Server running on PORT http://localhost:${env.PORT}`);
