@@ -6,7 +6,7 @@ import z from "zod";
 
 const router = Router();
 
-router.post("/signIn", validateBody(SignInSchema), signIn);
-router.post("/signUp", validateBody(SignUpSchema), signUp);
+router.post("/signin", validateBody(SignInSchema), signIn);
+router.post("/signup", validateBody(SignUpSchema), signUp);
 
 export default router;
