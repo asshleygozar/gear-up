@@ -3,16 +3,13 @@ import { Request, Response } from "express";
 import { users } from "@prisma/client";
 import { comparePassword, hashPassword } from "#lib/password.ts";
 import { generateJWTToken } from "#lib/jwt.ts";
+import { SignInValidation, SignUpValidation } from "#lib/auth.ts";
 
-export async function signIn(request: Request, response: Response) {
+export async function signIn(request: Request<any, any, SignInValidation>, response: Response) {
     try {
         const { email, password } = request.body;
-        const data = {
-            email: email as string,
-            password: password as string,
-        };
 
-        const user = await getUserByEmail(data.email);
+        const user = await getUserByEmail(email);
 
         if (!user.success || !user.data)
             return response.status(401).json({
@@ -21,7 +18,7 @@ export async function signIn(request: Request, response: Response) {
                 error: "Invalid credentials",
             });
 
-        const isPasswordValid = await comparePassword(data.password, user.data.password);
+        const isPasswordValid = await comparePassword(password, user.data.password);
 
         if (!isPasswordValid)
             return response.status(401).json({
@@ -58,7 +55,7 @@ export async function signIn(request: Request, response: Response) {
     }
 }
 
-export async function signUp(request: Request<any, any, users>, response: Response) {
+export async function signUp(request: Request<any, any, SignUpValidation>, response: Response) {
     try {
         const { password } = request.body;
 

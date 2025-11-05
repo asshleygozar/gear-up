@@ -2,8 +2,9 @@ import "dotenv/config.js";
 import { users, Prisma } from "@prisma/client";
 import { ModelResponse } from "#utils/response.ts";
 import { prisma } from "#lib/prisma.ts";
+import { SignUpValidation } from "#lib/auth.ts";
 
-export async function createUser({ data }: { data: users }): Promise<ModelResponse<users>> {
+export async function createUser({ data }: { data: SignUpValidation }): Promise<ModelResponse<users>> {
     try {
         const user = await prisma.users.create({
             data,
