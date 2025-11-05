@@ -79,7 +79,15 @@ export async function signUp(request: Request<any, any, users>, response: Respon
         return response.status(201).json({
             success: true,
             message: "Sign in successfully",
-            data: { user: user.data, token: token },
+            data: {
+                id: user.data.user_id,
+                email: user.data.email,
+                username: user.data.username,
+                firstName: user.data.first_name,
+                lastName: user.data.last_name,
+                createdAt: user.data.created_at,
+            },
+            token,
         });
     } catch (error) {
         return response.status(500).json({
