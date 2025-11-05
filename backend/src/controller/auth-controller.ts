@@ -1,6 +1,5 @@
 import { createUser, getUserByEmail } from "../model/user.ts";
 import { Request, Response } from "express";
-import { users } from "@prisma/client";
 import { comparePassword, hashPassword } from "#lib/password.ts";
 import { generateJWTToken } from "#lib/jwt.ts";
 import { SignInValidation, SignUpValidation } from "#lib/auth.ts";
