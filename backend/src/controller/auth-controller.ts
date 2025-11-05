@@ -1,7 +1,8 @@
-import { createUser, getUserInfo, verifyPassword } from "../model/user.ts";
+import { createUser, getUserByEmail } from "../model/user.ts";
 import { Request, Response } from "express";
-import { createSession } from "../lib/session.ts";
-import { isUsernameExists as queryUsername } from "../model/user.ts";
+import { users } from "@prisma/client";
+import { comparePassword, hashPassword } from "#lib/password.ts";
+import { generateJWTToken } from "#lib/jwt.ts";
 
 export async function signIn(request: Request, response: Response) {
     try {
@@ -11,30 +12,42 @@ export async function signIn(request: Request, response: Response) {
             password: password as string,
         };
 
-        const user = await getUserInfo(data.email);
+        const user = await getUserByEmail(data.email);
 
         if (!user.success || !user.data)
             return response.json({
                 success: false,
-                message: "Failed to find user",
-                error: "User not found",
+                message: "Invalid credentials",
+                error: "Invalid credentials",
             });
 
-        const isPasswordValid = await verifyPassword({
-            password: data.password,
-            recordedPassword: user.data.password,
-        });
+        const isPasswordValid = await comparePassword(data.password, user.data.password);
 
-        if (!isPasswordValid.success)
+        if (!isPasswordValid)
             return response.json({
                 success: false,
-                message: "Failed to validate password",
-                error: "Invalid password",
+                message: "Invalid credentials",
+                error: "Invalid credentials",
             });
 
-        await createSession({ userId: user.data.user_id, response: response });
+        const token = await generateJWTToken({
+            id: user.data.user_id,
+            email: user.data.email,
+            username: user.data.username,
+        });
 
-        return response.json({ success: true, message: "Signed in successfully!" });
+        return response.json({
+            success: true,
+            message: "Signed in successfully!",
+            data: {
+                id: user.data.user_id,
+                email: user.data.email,
+                username: user.data.username,
+                firstName: user.data.first_name,
+                lastName: user.data.last_name,
+            },
+            token,
+        });
     } catch (error) {
         console.error("Server error: ", error);
         return response.status(500).json({
@@ -45,43 +58,36 @@ export async function signIn(request: Request, response: Response) {
     }
 }
 
-export async function signUp(request: Request, response: Response) {
+export async function signUp(request: Request<any, any, users>, response: Response) {
     try {
-        if (!request.body) {
-            return response.status(400).json({
-                success: false,
-                message: "Failed to receive form data",
-                error: "No body provided",
-            });
-        }
+        const { password } = request.body;
 
-        const { email, password, first_name, last_name, username } = request.body;
+        const hashedPassword = await hashPassword(password);
 
-        const isUsernameExists = await queryUsername(username);
-
-        if (!isUsernameExists.success) {
-            return response.json({
-                success: false,
-                message: "Username taken please user another username",
-                error: "Username taken",
-            });
-        }
-
-        const user = await createUser({ ...request.body });
+        const user = await createUser({ data: { ...request.body, password: hashedPassword } });
 
         if (!user.success || !user.data) {
-            return response.json({ success: false, message: "Failed to create user", error: user.error });
+            return response.status(400).json({ success: false, message: user.message, error: user.error });
         }
 
-        await createSession({ userId: user.data.user_id, response: response });
-
-        return response.status(200).json({ success: true, message: "Account created successfully!" });
-    } catch (error) {
-        console.error("Server error: ", error);
-        return response.json({
-            success: false,
-            message: "Failed to create account",
-            error: "Server error",
+        const token = await generateJWTToken({
+            id: user.data.user_id,
+            email: user.data.email,
+            username: user.data.username,
         });
+
+        return response.status(201).json({
+            success: true,
+            message: "Sign in successfully",
+            data: { user: user.data, token: token },
+        });
+    } catch (error) {
+        return response
+            .json({
+                success: false,
+                message: "Failed to create account",
+                error: "Server error",
+            })
+            .status(500);
     }
 }
