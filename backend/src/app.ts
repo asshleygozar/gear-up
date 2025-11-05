@@ -4,6 +4,7 @@ import user from "./routes/auth-route.ts";
 import cors from "cors";
 import helmet from "helmet";
 import { env } from "../env.ts";
+import type { Request, Response } from "express";
 
 const app = express();
 
@@ -18,8 +19,8 @@ app.use(
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParse());
 
-app.get("/health", (req, res) => {
-    res.status(200).json({
+app.get("/health", (request: Request, response: Response) => {
+    response.status(200).json({
         status: "OK",
         timestamp: new Date().toISOString(),
         service: "GearUp API",
@@ -28,7 +29,4 @@ app.get("/health", (req, res) => {
 
 app.use("/auth", user);
 
-app.listen(env.PORT, () => {
-    console.log(`Server running on PORT http://localhost:${env.PORT}`);
-    console.log(`Environment: ${env.APP_STAGE}`);
-});
+export default app;
