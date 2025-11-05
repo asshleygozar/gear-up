@@ -15,7 +15,7 @@ export async function signIn(request: Request, response: Response) {
         const user = await getUserByEmail(data.email);
 
         if (!user.success || !user.data)
-            return response.json({
+            return response.status(401).json({
                 success: false,
                 message: "Invalid credentials",
                 error: "Invalid credentials",
@@ -24,7 +24,7 @@ export async function signIn(request: Request, response: Response) {
         const isPasswordValid = await comparePassword(data.password, user.data.password);
 
         if (!isPasswordValid)
-            return response.json({
+            return response.status(401).json({
                 success: false,
                 message: "Invalid credentials",
                 error: "Invalid credentials",
@@ -36,7 +36,7 @@ export async function signIn(request: Request, response: Response) {
             username: user.data.username,
         });
 
-        return response.json({
+        return response.status(200).json({
             success: true,
             message: "Signed in successfully!",
             data: {
@@ -67,7 +67,7 @@ export async function signUp(request: Request<any, any, users>, response: Respon
         const user = await createUser({ data: { ...request.body, password: hashedPassword } });
 
         if (!user.success || !user.data) {
-            return response.status(400).json({ success: false, message: user.message, error: user.error });
+            return response.status(401).json({ success: false, message: user.message, error: user.error });
         }
 
         const token = await generateJWTToken({
@@ -82,12 +82,10 @@ export async function signUp(request: Request<any, any, users>, response: Respon
             data: { user: user.data, token: token },
         });
     } catch (error) {
-        return response
-            .json({
-                success: false,
-                message: "Failed to create account",
-                error: "Server error",
-            })
-            .status(500);
+        return response.status(500).json({
+            success: false,
+            message: "Failed to create account",
+            error: "Server error",
+        });
     }
 }
