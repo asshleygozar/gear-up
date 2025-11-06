@@ -5,6 +5,7 @@ import cors from "cors";
 import helmet from "helmet";
 import { env } from "../env.ts";
 import type { Request, Response } from "express";
+import { errorHandler } from "#middlewares/error-handler.ts";
 
 const app = express();
 
@@ -28,5 +29,7 @@ app.get("/health", (request: Request, response: Response) => {
 });
 
 app.use("/auth", user);
+
+app.use(errorHandler);
 
 export default app;
