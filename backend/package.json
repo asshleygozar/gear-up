@@ -1,7 +1,8 @@
 {
-    "name": "backend",
+    "name": "gearup",
     "version": "1.0.0",
-    "main": "src/app.ts",
+    "description": "Financial Manager API for GearUp",
+    "main": "src/index.ts",
     "type": "module",
     "scripts": {
         "db:migrate": "npx prisma migrate dev",
@@ -11,13 +12,18 @@
         "db:seed": "npx tsx src/db/seed.ts",
         "dev": "cross-env APP_STAGE=dev npx tsx --watch src/index.ts",
         "test": "cross-env APP_STAGE=test vitest run",
-        "start": "node dist/app.js",
+        "start": "npx tsx src/index.ts",
         "build": "tsc"
     },
-    "keywords": [],
+    "keywords": [
+        "financial manager",
+        "node.js",
+        "api",
+        "express.js",
+        "prisma"
+    ],
     "author": "",
     "license": "ISC",
-    "description": "",
     "imports": {
         "#*": "./src/*"
     },
