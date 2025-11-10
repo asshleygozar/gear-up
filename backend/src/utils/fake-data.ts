@@ -1,26 +1,18 @@
-import { users } from "@prisma/client";
 import { hashPassword } from "#lib/password.ts";
 import { faker } from "@faker-js/faker";
+import { SignUpValidation } from "#lib/auth.ts";
 
-const USER_DATA_LENGTH = 20;
-
-// Fake user data
-export async function generateFakeUsers(): Promise<users[]> {
-    const items = Array.from({ length: USER_DATA_LENGTH });
-    const users = await Promise.all(
-        items.map(async () => {
-            const hashedPassword = await hashPassword(faker.internet.password());
-            return {
-                email: faker.internet.email(),
-                password: hashedPassword,
-                first_name: faker.person.firstName(),
-                last_name: faker.person.lastName(),
-                username: faker.internet.username(),
-                created_at: new Date(),
-                updated_at: new Date(),
-            } as users;
-        })
-    );
-
-    return users;
-}
+export const testUser = async () => {
+    const rawPassword = faker.internet.password();
+    const hashedPassword = await hashPassword(rawPassword);
+    const user = {
+        email: faker.internet.email(),
+        username: faker.internet.username(),
+        first_name: faker.person.firstName(),
+        last_name: faker.person.lastName(),
+        password: hashedPassword,
+    };
+    console.log(`📧 Test email: ${user.email}`);
+    console.log(`🧪Test password: ${rawPassword}`);
+    return user as SignUpValidation;
+};

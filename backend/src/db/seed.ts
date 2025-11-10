@@ -1,22 +1,24 @@
-import { createManyUser } from "#models/user.model.ts";
-import { generateFakeUsers } from "#utils/fake-data.ts";
+import { testUser } from "#utils/fake-data.ts";
+import { UserModel } from "#models/user.model.ts";
+import { pathToFileURL } from "url";
 
 const seed = async () => {
-    const fakeUsers = await generateFakeUsers();
-    console.log("🫘  Starting database seed....");
+    console.log("🌱 Starting database seed...");
 
     try {
-        await createManyUser(...fakeUsers);
-        console.log("User seeded succesfully!");
+        const fakeUser = await testUser();
+        await UserModel.create({ data: fakeUser });
+        console.log("✅ User seeded successfully!");
     } catch (error) {
-        console.error("Database error: ", error);
+        console.log("Database error: ", error);
         throw error;
     }
 };
 
-if (import.meta.url === `file://${process.argv[1]}`)
+if (import.meta.url === pathToFileURL(process.argv[1]).href) {
     seed()
         .then(() => process.exit(0))
         .catch(() => process.exit(1));
+}
 
 export default seed;
