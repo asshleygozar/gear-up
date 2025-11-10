@@ -5,7 +5,7 @@ import cors from "cors";
 import helmet from "helmet";
 import { env } from "../env.ts";
 import type { Request, Response } from "express";
-import { errorHandler } from "#middlewares/error-handler.ts";
+import { errorHandler } from "#middlewares/error.middleware.ts";
 
 const app = express();
 

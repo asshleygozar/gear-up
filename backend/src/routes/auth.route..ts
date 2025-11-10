@@ -1,6 +1,6 @@
 import { Router } from "express";
 import { signIn, signUp } from "../controllers/auth.controller.ts";
-import { validateBody } from "../middlewares/validation.ts";
+import { validateBody } from "../middlewares/validation.middleware.ts";
 import { SignInSchema, SignUpSchema } from "../lib/auth.ts";
 
 const router = Router();
