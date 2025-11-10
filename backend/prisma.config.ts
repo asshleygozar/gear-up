@@ -1,7 +1,7 @@
 import { defineConfig } from "prisma/config";
 import "dotenv/config";
 import { config } from "dotenv";
-import { env } from "./env";
+import { env } from "env.ts";
 
 config();
 
