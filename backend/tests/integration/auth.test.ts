@@ -1,15 +1,18 @@
 import request from "supertest";
-import app from "../../src/app";
-import { env } from "../../env";
-import { describe, expect, it } from "vitest";
+import { faker } from "@faker-js/faker";
+import app from "#/app.ts";
+import { cleanUpDatabase } from "../helpers/db.ts";
 
 describe("Authentication Endpoints", () => {
+    afterEach(async () => {
+        await cleanUpDatabase();
+    });
     describe("POST /auth/signup", () => {
         it("should register new user with valid data", async () => {
             const userData = {
-                email: "test@gmail.com",
-                username: "testuser",
-                password: "myPassword",
+                email: faker.internet.email(),
+                username: faker.internet.username(),
+                password: faker.internet.password(),
             };
             const response = await request(app).post("/auth/signup").send(userData).expect(201);
             expect(response.body).toHaveProperty("data");
