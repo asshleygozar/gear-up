@@ -1,4 +1,4 @@
-import { createManyUser } from "#models/user.ts";
+import { createManyUser } from "#models/user.model.ts";
 import { generateFakeUsers } from "#utils/fake-data.ts";
 
 const seed = async () => {

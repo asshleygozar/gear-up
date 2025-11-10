@@ -1,6 +1,6 @@
 import express from "express";
 import cookieParse from "cookie-parser";
-import user from "./routes/auth-route.ts";
+import user from "./routes/auth.route..ts";
 import cors from "cors";
 import helmet from "helmet";
 import { env } from "../env.ts";

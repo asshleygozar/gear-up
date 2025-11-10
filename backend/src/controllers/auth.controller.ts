@@ -1,4 +1,4 @@
-import { UserModel } from "../models/user.ts";
+import { UserModel } from "../models/user.model.ts";
 import { Request, Response } from "express";
 import { comparePassword, hashPassword } from "#lib/password.ts";
 import { generateJWTToken } from "#lib/jwt.ts";
