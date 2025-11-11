@@ -1,6 +1,6 @@
 import { hashPassword } from "#lib/password.ts";
 import { faker } from "@faker-js/faker";
-import { SignUpValidation } from "#lib/auth.ts";
+import type { SignUpValidation } from "#lib/auth.ts";
 
 export const testUser = async () => {
     const rawPassword = faker.internet.password();

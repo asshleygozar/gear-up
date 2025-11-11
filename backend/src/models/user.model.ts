@@ -1,6 +1,6 @@
 import "dotenv/config.js";
 import { prisma } from "#lib/prisma.ts";
-import { SignUpValidation } from "#lib/auth.ts";
+import type { SignUpValidation } from "#lib/auth.ts";
 
 export const UserModel = {
     findByEmail: async (email: string) =>

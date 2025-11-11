@@ -1,8 +1,8 @@
 import { UserModel } from "../models/user.model.ts";
-import { Request, Response } from "express";
+import type { Request, Response } from "express";
 import { comparePassword, hashPassword } from "#lib/password.ts";
 import { generateJWTToken } from "#lib/jwt.ts";
-import { SignInValidation, SignUpValidation } from "#lib/auth.ts";
+import type { SignInValidation, SignUpValidation } from "#lib/auth.ts";
 import { PrismaError } from "#errors/prisma-error.ts";
 import { Prisma } from "@prisma/client";
 
