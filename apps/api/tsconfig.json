@@ -16,7 +16,6 @@
         "allowImportingTsExtensions": true,
         "forceConsistentCasingInFileNames": true,
         "allowSyntheticDefaultImports": true,
-        "typeRoots": ["./types", "./node_modules/@types", "./node_modules"],
         "types": ["vitest/globals"]
     },
     "include": ["**/*.ts"]
