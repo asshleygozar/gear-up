@@ -1,5 +1,5 @@
-import { testUser } from "#utils/fake-data.ts";
-import { UserModel } from "#models/user.model.ts";
+import { testUser } from "#utils/fake-data.js";
+import { UserModel } from "#models/user.model.js";
 import { pathToFileURL } from "url";
 
 const seed = async () => {

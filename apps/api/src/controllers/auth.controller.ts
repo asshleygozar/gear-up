@@ -1,9 +1,9 @@
-import { UserModel } from "../models/user.model.ts";
+import { UserModel } from "#models/user.model.js";
 import type { Request, Response } from "express";
-import { comparePassword, hashPassword } from "#lib/password.ts";
-import { generateJWTToken } from "#lib/jwt.ts";
-import type { SignInValidation, SignUpValidation } from "#lib/auth.ts";
-import { PrismaError } from "#errors/prisma-error.ts";
+import { comparePassword, hashPassword } from "#lib/password.js";
+import { generateJWTToken } from "#lib/jwt.js";
+import type { SignInValidation, SignUpValidation } from "#lib/auth.js";
+import { PrismaError } from "#errors/prisma-error.js";
 import { Prisma } from "@prisma/client";
 
 export async function signIn(request: Request<any, any, SignInValidation>, response: Response) {

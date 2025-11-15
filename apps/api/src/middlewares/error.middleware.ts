@@ -1,4 +1,4 @@
-import { PrismaError } from "#errors/prisma-error.ts";
+import { PrismaError } from "#errors/prisma-error.js";
 import type { Request, Response, NextFunction } from "express";
 
 export const errorHandler = async (error: Error, request: Request, response: Response, next: NextFunction) => {

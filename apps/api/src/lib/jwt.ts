@@ -1,6 +1,6 @@
 import { createSecretKey } from "crypto";
 import { jwtVerify, SignJWT } from "jose";
-import { env } from "../../env.ts";
+import { env } from "#config/env.js";
 
 export type JWTPayload = {
     id: number;

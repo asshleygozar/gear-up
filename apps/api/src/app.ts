@@ -1,11 +1,11 @@
 import express from "express";
 import cookieParse from "cookie-parser";
-import user from "./routes/auth.route..ts";
+import user from "#routes/auth.route.js";
 import cors from "cors";
 import helmet from "helmet";
-import { env } from "../env.ts";
+import { env } from "./config/env.js";
 import type { Request, Response } from "express";
-import { errorHandler } from "#middlewares/error.middleware.ts";
+import { errorHandler } from "#middlewares/error.middleware.js";
 
 const app = express();
 

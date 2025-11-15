@@ -1,7 +1,8 @@
 import request from "supertest";
 import { faker } from "@faker-js/faker";
-import app from "#/app.ts";
-import { cleanUpDatabase } from "../helpers/db.ts";
+import app from "#/src/app.js";
+import { cleanUpDatabase } from "#/tests/helpers/db.js";
+import { describe, afterEach, it, expect } from "vitest";
 
 describe("Authentication Endpoints", () => {
     afterEach(async () => {
