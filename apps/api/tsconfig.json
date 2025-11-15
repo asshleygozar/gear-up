@@ -3,20 +3,18 @@
         "target": "es2022",
         "module": "nodenext",
         "moduleResolution": "nodenext",
-        "outDir": "./dist",
-        "rootDir": ".",
-        "baseUrl": ".",
+        "outDir": "dist",
+        "rootDir": "src",
         "paths": {
-            "#/*": ["./src/*"]
+            "#*": ["./src/*"]
         },
         "strict": true,
-        "noEmit": true,
         "esModuleInterop": true,
         "skipLibCheck": true,
-        "allowImportingTsExtensions": true,
         "forceConsistentCasingInFileNames": true,
         "allowSyntheticDefaultImports": true,
-        "types": ["vitest/globals"]
+        "types": ["node"]
     },
-    "include": ["**/*.ts"]
+    "include": ["src"],
+    "exclude": ["dist"]
 }
