@@ -1,8 +1,8 @@
 {
     "name": "gearup-api",
     "version": "1.0.0",
-    "description": "Financial Manager API for GearUp",
-    "main": "src/index.ts",
+    "description": "API for GearUp",
+    "main": "dist/index.js",
     "type": "module",
     "scripts": {
         "db:migrate": "npx prisma migrate dev",
@@ -10,9 +10,9 @@
         "db:generate": "npx prisma generate",
         "db:studio": "npx prisma studio",
         "db:seed": "node src/db/seed.ts",
-        "dev": "cross-env APP_STAGE=dev node --watch src/index.ts",
+        "dev": "cross-env APP_STAGE=dev tsx --watch src/index.ts",
         "test": "cross-env APP_STAGE=test vitest run",
-        "start": "node -r esbuild-register ./src/index.ts",
+        "start": "node dist/index.js",
         "build": "tsc"
     },
     "keywords": [
@@ -25,7 +25,7 @@
     "author": "",
     "license": "ISC",
     "imports": {
-        "#*": "./src/*"
+        "#*": "./dist/*"
     },
     "devDependencies": {
         "@faker-js/faker": "^10.1.0",
