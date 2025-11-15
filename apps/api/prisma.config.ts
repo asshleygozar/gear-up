@@ -1,7 +1,6 @@
-import { defineConfig } from "prisma/config";
+import { defineConfig, env } from "prisma/config";
 import "dotenv/config";
 import { config } from "dotenv";
-import { env } from "./env.ts";
 
 config();
 
@@ -12,6 +11,6 @@ export default defineConfig({
     },
     engine: "classic",
     datasource: {
-        url: env.DATABASE_URL,
+        url: env("DATABASE_URL"),
     },
 });
