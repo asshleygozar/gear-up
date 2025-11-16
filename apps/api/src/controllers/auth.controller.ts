@@ -63,6 +63,8 @@ export type UserType = {
     email: string;
     username: string;
     password: string;
+    firstName?: string;
+    lastName?: string;
 };
 
 export async function signUp(request: Request<any, any, SignUpValidation>, response: Response) {

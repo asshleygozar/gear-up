@@ -1,6 +1,6 @@
 import { hashPassword } from "#lib/password.js";
 import { faker } from "@faker-js/faker";
-import type { SignUpValidation } from "#lib/auth.js";
+import { UserType } from "#controllers/auth.controller.js";
 
 export const testUser = async () => {
     const rawPassword = faker.internet.password();
@@ -14,5 +14,5 @@ export const testUser = async () => {
     };
     console.log(`📧 Test email: ${user.email}`);
     console.log(`🧪Test password: ${rawPassword}`);
-    return user as SignUpValidation;
+    return user as UserType;
 };
