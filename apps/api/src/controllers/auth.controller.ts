@@ -59,13 +59,26 @@ export async function signIn(request: Request<any, any, SignInValidation>, respo
     }
 }
 
+export type UserType = {
+    email: string;
+    username: string;
+    password: string;
+};
+
 export async function signUp(request: Request<any, any, SignUpValidation>, response: Response) {
     try {
-        const { password } = request.body;
+        const { email, password } = request.body;
 
+        const username = email.split("@")[0];
         const hashedPassword = await hashPassword(password);
 
-        const user = await UserModel.create({ data: { ...request.body, password: hashedPassword } });
+        const user = await UserModel.create({
+            data: {
+                email,
+                username,
+                password: hashedPassword,
+            } as UserType,
+        });
 
         const token = await generateJWTToken({
             id: user.user_id,
@@ -75,7 +88,7 @@ export async function signUp(request: Request<any, any, SignUpValidation>, respo
 
         return response.status(201).json({
             success: true,
-            message: "Sign in successfully",
+            message: "Sign up successfully",
             data: {
                 id: user.user_id,
                 email: user.email,

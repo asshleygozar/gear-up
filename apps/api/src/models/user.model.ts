@@ -1,6 +1,6 @@
 import "dotenv/config.js";
 import { prisma } from "#lib/prisma.js";
-import type { SignUpValidation } from "#lib/auth.js";
+import type { UserType } from "#controllers/auth.controller.js";
 
 export const UserModel = {
     findByEmail: async (email: string) =>
@@ -9,7 +9,7 @@ export const UserModel = {
                 email,
             },
         }),
-    create: async ({ data }: { data: SignUpValidation }) =>
+    create: async ({ data }: { data: UserType }) =>
         await prisma.users.create({
             data,
         }),
