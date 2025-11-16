@@ -37,7 +37,7 @@ export default function SignUpPage() {
 				password: formData.get('password'),
 				confirmPassword: formData.get('confirmPassword'),
 			};
-			const result = await fetch('http://localhost:8080/auth/signup/', {
+			const result = await fetch(`${process.env.API_ORIGIN}/auth/signup/`, {
 				method: 'POST',
 				headers: {
 					'Content-Type': 'application/json',
