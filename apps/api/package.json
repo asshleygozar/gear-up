@@ -27,6 +27,9 @@
     "imports": {
         "#*": "./dist/*"
     },
+    "prisma": {
+        "schema": "prisma/schema.prisma"
+    },
     "devDependencies": {
         "@faker-js/faker": "^10.1.0",
         "@tsconfig/node22": "^22.0.2",
