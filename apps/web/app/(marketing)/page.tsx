@@ -2,27 +2,37 @@ import { BrandNameLogo } from '@/components/Brand';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
 
+const navigation = [
+	{
+		name: 'Features',
+		path: '/features',
+	},
+	{
+		name: 'About',
+		path: '/about',
+	},
+	{
+		name: 'Pricing',
+		path: '/pricing',
+	},
+];
+
 const Home = () => {
 	return (
 		<div className='flex flex-col gap-15 justify-between'>
-			<nav className='flex justify-between items-center gap-10 h-[70px] py-[1rem] px-[3.5rem] shadow-md'>
+			<nav className='flex justify-between items-center gap-10 h-[70px] py-4 px-14 shadow-md'>
 				<BrandNameLogo />
 				<ul className='flex gap-5'>
-					<Link href={'/features'}>
-						<li className='text-foreground font-inter font-semibold cursor-pointer'>
-							Features
-						</li>
-					</Link>
-					<Link href={'/about'}>
-						<li className='text-foreground font-inter font-semibold cursor-pointer'>
-							About
-						</li>
-					</Link>
-					<Link href={'/pricing'}>
-						<li className='text-foreground font-inter font-semibold cursor-pointer'>
-							Pricing
-						</li>
-					</Link>
+					{navigation.map((item, index) => (
+						<Link
+							key={index}
+							href={item.path}
+						>
+							<li className='text-foreground hover:text-primary font-inter font-semibold cursor-pointer'>
+								{item.name}
+							</li>
+						</Link>
+					))}
 				</ul>
 				<div className='flex gap-5 self-end'>
 					<Link href={'/signin'}>
@@ -35,7 +45,7 @@ const Home = () => {
 					</Link>
 					<Link href={'/signup'}>
 						<Button
-							variant={'ghost'}
+							variant={'default'}
 							className='font-quick-sand font-medium cursor-pointer'
 						>
 							Sign up
@@ -43,11 +53,12 @@ const Home = () => {
 					</Link>
 				</div>
 			</nav>
-			<main className='px-[3.5rem]'>
+			<main className='px-14'>
 				<section className='grid grid-cols-2 items-center h-[60vh]'>
 					<section className='flex flex-col gap-4'>
 						<h1 className='text-foreground font-inter font-bold text-6xl'>
-							Take Control of Your <span className='text-brand'>Finances</span>
+							Take Control of Your{' '}
+							<span className='text-primary'>Finances</span>
 						</h1>
 						<h2 className='text-foreground font-inter text-xl'>
 							Track expenses, manage savings, and achieve financial freedom with
@@ -56,8 +67,8 @@ const Home = () => {
 						<div className='flex gap-5'>
 							<Link href={'/'}>
 								<Button
-									variant={'outline'}
-									className='bg-income font-inter text-lg px-[2rem] py-[1.5rem] hover:text-brand cursor-pointer'
+									variant={'default'}
+									className='text-primary-foreground font-inter text-lg px-8 py-6 hover:bg-violet-500 hover:text-primary-foreground cursor-pointer'
 								>
 									Get started
 								</Button>
@@ -65,7 +76,7 @@ const Home = () => {
 							<Link href={'/'}>
 								<Button
 									variant={'secondary'}
-									className='text-foreground font-inter text-lg px-[2rem] py-[1.5rem] cursor-pointer'
+									className='text-foreground font-inter text-lg px-8 py-6 cursor-pointer'
 								>
 									See demo
 								</Button>
