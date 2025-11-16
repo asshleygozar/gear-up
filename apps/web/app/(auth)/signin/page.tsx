@@ -19,6 +19,12 @@ const initialState: APIResponse = {
 	success: false,
 	message: '',
 	error: '',
+	errors: [
+		{
+			field: '',
+			message: '',
+		},
+	],
 };
 
 export default function SignInPage() {
@@ -30,7 +36,7 @@ export default function SignInPage() {
 				email: formData.get('email'),
 				password: formData.get('password'),
 			};
-			const result = await fetch('http://localhost:8080/api/auth/signin/', {
+			const result = await fetch('http://localhost:8080/auth/signin/', {
 				method: 'POST',
 				headers: {
 					'Content-Type': 'application/json',
@@ -67,13 +73,18 @@ export default function SignInPage() {
 		<div className='h-screen flex justify-center items-center'>
 			<Form
 				action={formAction}
-				className='bg-card rounded-xl p-[2rem] w-md h-fit flex flex-col gap-[1rem] shadow-md'
+				className='bg-card rounded-xl p-8 w-md h-fit flex flex-col gap-4 shadow-md'
 			>
 				<h1 className='text-center text-2xl font-inter font-semibold'>
 					Log into your account
 				</h1>
-				<FormError className='text-red-400'>{state.message}</FormError>
+				<FormError className='text-red-500'>{state.message}</FormError>
 				<FormGroup className='flex flex-col gap-2'>
+					{state?.errors && state?.errors && state.errors?.length > 0 && (
+						<FormError className='text-red-500 text-[0.9rem]'>
+							{state.errors.find((field) => field.field === 'email')?.message}
+						</FormError>
+					)}
 					<FormLabel htmlFor='email'>Email</FormLabel>
 					<FormInput
 						id='email'
@@ -90,6 +101,14 @@ export default function SignInPage() {
 					/>
 				</FormGroup>
 				<FormGroup className='flex flex-col gap-2'>
+					{state?.errors && state?.errors && state.errors?.length > 0 && (
+						<FormError className='text-red-500 text-[0.9rem]'>
+							{
+								state.errors.find((field) => field.field === 'password')
+									?.message
+							}
+						</FormError>
+					)}
 					<FormLabel htmlFor='password'>Password</FormLabel>
 					<FormInput
 						id='password'
@@ -108,14 +127,14 @@ export default function SignInPage() {
 				<Button
 					type='submit'
 					disabled={isPending}
-					className='bg-brand text-white text-md font-inter font-medium hover:bg-green-400 cursor-pointer'
+					className='bg-primary text-white text-md font-inter font-medium hover:bg-violet-500 cursor-pointer'
 				>
 					{isPending ? <Loader2Icon className='animate-spin' /> : 'Sign in'}
 				</Button>
 				<p className='text-center text-sm'>
 					Don&apos;t have an account?{' '}
 					<Link href={'/signup'}>
-						<span className='text-brand'>Sign up</span>
+						<span className='text-primary'>Sign up</span>
 					</Link>{' '}
 					instead
 				</p>
