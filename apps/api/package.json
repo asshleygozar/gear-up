@@ -28,7 +28,7 @@
         "#*": "./dist/*"
     },
     "prisma": {
-        "schema": "prisma/schema.prisma"
+        "schema": "./prisma/schema.prisma"
     },
     "devDependencies": {
         "@faker-js/faker": "^10.1.0",
