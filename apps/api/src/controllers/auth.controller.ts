@@ -34,18 +34,27 @@ export async function signIn(request: Request<any, any, SignInValidation>, respo
             username: user.username,
         });
 
-        return response.status(200).json({
-            success: true,
-            message: "Signed in successfully!",
-            data: {
-                id: user.user_id,
-                email: user.email,
-                username: user.username,
-                firstName: user.first_name,
-                lastName: user.last_name,
-            },
-            token,
-        });
+        return response
+            .cookie("gearup_token", token, {
+                httpOnly: true,
+                secure: process.env.NODE_ENV === "production",
+                sameSite: "lax",
+                maxAge: 7 * 24 * 60 * 60 * 1000,
+                path: "/",
+            })
+            .status(200)
+            .json({
+                success: true,
+                message: "Signed in successfully!",
+                data: {
+                    id: user.user_id,
+                    email: user.email,
+                    username: user.username,
+                    firstName: user.first_name,
+                    lastName: user.last_name,
+                },
+                token,
+            });
     } catch (error) {
         console.error("Server error: ", error);
         if (error instanceof Prisma.PrismaClientKnownRequestError) {
@@ -88,19 +97,33 @@ export async function signUp(request: Request<any, any, SignUpValidation>, respo
             username: user.username,
         });
 
-        return response.status(201).json({
-            success: true,
-            message: "Sign up successfully",
-            data: {
-                id: user.user_id,
-                email: user.email,
-                username: user.username,
-                firstName: user.first_name,
-                lastName: user.last_name,
-                createdAt: user.created_at,
-            },
-            token,
+        response.cookie("gearup_token", token, {
+            httpOnly: true,
+            secure: process.env.NODE_ENV === "production",
+            sameSite: "lax",
+            maxAge: 7 * 24 * 60 * 60 * 1000,
+            path: "/",
         });
+        return response
+            .cookie("token", token, {
+                httpOnly: true,
+                secure: process.env.NODE_ENV === "production",
+                sameSite: "lax",
+                maxAge: 7 * 24 * 60 * 60 * 1000,
+            })
+            .status(201)
+            .json({
+                success: true,
+                message: "Sign up successfully",
+                data: {
+                    id: user.user_id,
+                    email: user.email,
+                    username: user.username,
+                    firstName: user.first_name,
+                    lastName: user.last_name,
+                    createdAt: user.created_at,
+                },
+            });
     } catch (error) {
         if (error instanceof Prisma.PrismaClientKnownRequestError) {
             throw new PrismaError(error);
