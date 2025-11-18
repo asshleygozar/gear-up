@@ -3,11 +3,19 @@ import cookieParse from "cookie-parser";
 import user from "#routes/auth.route.js";
 import cors from "cors";
 import helmet from "helmet";
+import rateLimit from "express-rate-limit";
 import { env } from "./config/env.js";
 import type { Request, Response } from "express";
 import { errorHandler } from "#middlewares/error.middleware.js";
 
 const app = express();
+const limiter = rateLimit({
+    windowMs: 15 * 60 * 1000,
+    limit: 10,
+    message: "Too many attempts please try again later.",
+    standardHeaders: true,
+    legacyHeaders: false,
+});
 
 app.use(express.json());
 app.use(helmet());
@@ -28,7 +36,7 @@ app.get("/health", (request: Request, response: Response) => {
     });
 });
 
-app.use("/auth", user);
+app.use("/auth", limiter, user);
 
 app.use(errorHandler);
 
