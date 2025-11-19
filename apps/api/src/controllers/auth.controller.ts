@@ -35,7 +35,7 @@ export async function signIn(request: Request<any, any, SignInValidation>, respo
         });
 
         return response
-            .cookie("gearup_token", token, {
+            .cookie("token", token, {
                 httpOnly: true,
                 secure: process.env.NODE_ENV === "production",
                 sameSite: "lax",
@@ -97,7 +97,7 @@ export async function signUp(request: Request<any, any, SignUpValidation>, respo
             username: user.username,
         });
 
-        response.cookie("gearup_token", token, {
+        response.cookie("token", token, {
             httpOnly: true,
             secure: process.env.NODE_ENV === "production",
             sameSite: "lax",
