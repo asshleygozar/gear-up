@@ -135,3 +135,7 @@ export async function signUp(request: Request<any, any, SignUpValidation>, respo
         });
     }
 }
+
+export async function validate(request: Request, response: Response) {
+    return response.status(200).json({ success: true, message: "Validated" });
+}

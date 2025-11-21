@@ -38,8 +38,6 @@ app.get("/health", (request: Request, response: Response) => {
 });
 
 app.use("/auth", limiter, user);
-app.use("/auth/validate", authenticateToken);
-
 app.use(errorHandler);
 
 export default app;
