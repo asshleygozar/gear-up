@@ -3,6 +3,7 @@ import { NextRequest } from 'next/server';
 
 export async function middleware(request: NextRequest) {
 	try {
+		const { pathname } = request.nextUrl;
 		const token = request.cookies.get('token')?.value;
 		const protectedRoutes = ['/dashboard'];
 		const publicRoutes = ['/'];
@@ -11,15 +12,13 @@ export async function middleware(request: NextRequest) {
 		const isProtectedRoute = protectedRoutes.some((route) =>
 			request.nextUrl.pathname.startsWith(route)
 		);
-		const isPublicRoutes = publicRoutes.some((route) =>
-			request.nextUrl.pathname.startsWith(route)
-		);
+		const isPublicRoute = publicRoutes.includes(pathname);
 		const isAuthRoute = authRoutes.some((route) =>
 			request.nextUrl.pathname.startsWith(route)
 		);
 
 		// Checks if has token + on landing page or auth page then if token is valid, redirects to dashboard
-		if (token && (isPublicRoutes || isAuthRoute)) {
+		if (token && (isPublicRoute || isAuthRoute)) {
 			return NextResponse.redirect(new URL('/dashboard', request.url));
 		}
 
