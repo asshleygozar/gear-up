@@ -5,6 +5,7 @@ import { generateJWTToken } from "#lib/jwt.js";
 import type { SignInValidation, SignUpValidation } from "#lib/auth.js";
 import { PrismaError } from "#errors/prisma-error.js";
 import { Prisma } from "@prisma/client";
+import { env } from "#config/env.js";
 
 export async function signIn(request: Request<any, any, SignInValidation>, response: Response) {
     try {
@@ -39,6 +40,7 @@ export async function signIn(request: Request<any, any, SignInValidation>, respo
                 httpOnly: true,
                 secure: process.env.NODE_ENV === "production",
                 sameSite: "lax",
+                domain: env.WEB_ORIGIN,
                 maxAge: 7 * 24 * 60 * 60 * 1000,
                 path: "/",
             })
