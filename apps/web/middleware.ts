@@ -20,20 +20,7 @@ export async function middleware(request: NextRequest) {
 
 		// Checks if has token + on landing page or auth page then if token is valid, redirects to dashboard
 		if (token && (isPublicRoutes || isAuthRoute)) {
-			const response = await fetch(
-				`${process.env.NEXT_PUBLIC_API_ORIGIN}/auth/validate`,
-				{
-					method: 'POST',
-					headers: {
-						Authorization: `Bearer ${token}`,
-					},
-					credentials: 'include',
-				}
-			);
-
-			if (response.ok) {
-				return NextResponse.redirect(new URL('/dashboard', request.url));
-			}
+			return NextResponse.redirect(new URL('/dashboard', request.url));
 		}
 
 		// Checks is no token and accessing protected routes
