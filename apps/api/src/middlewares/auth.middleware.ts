@@ -7,8 +7,7 @@ interface AuthenticatedRequest extends Request {
 
 export const authenticateToken = async (request: AuthenticatedRequest, response: Response, next: NextFunction) => {
     try {
-        const token = request.cookies.token || request.headers.cookie;
-
+        const token = request.cookies.token;
         if (!token) {
             return response.status(401).json({ success: false, message: "Not authenticated", error: "Bad request" });
         }
