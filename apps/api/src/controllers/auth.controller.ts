@@ -41,6 +41,7 @@ export async function signIn(request: Request<any, any, SignInValidation>, respo
                 sameSite: "none",
                 maxAge: 7 * 24 * 60 * 60 * 1000,
                 path: "/",
+                partitioned: true,
             })
             .status(200)
             .json({
@@ -101,6 +102,7 @@ export async function signUp(request: Request<any, any, SignUpValidation>, respo
                 secure: process.env.NODE_ENV === "production",
                 sameSite: "none",
                 maxAge: 7 * 24 * 60 * 60 * 1000,
+                partitioned: true,
             })
             .status(201)
             .json({
