@@ -39,7 +39,7 @@ export async function signIn(request: Request<any, any, SignInValidation>, respo
             .cookie("token", token, {
                 httpOnly: true,
                 secure: process.env.NODE_ENV === "production",
-                sameSite: "lax",
+                sameSite: "strict",
                 domain: env.WEB_ORIGIN,
                 maxAge: 7 * 24 * 60 * 60 * 1000,
                 path: "/",
@@ -97,19 +97,12 @@ export async function signUp(request: Request<any, any, SignUpValidation>, respo
             email: user.email,
             username: user.username,
         });
-
-        response.cookie("token", token, {
-            httpOnly: true,
-            secure: process.env.NODE_ENV === "production",
-            sameSite: "lax",
-            maxAge: 7 * 24 * 60 * 60 * 1000,
-            path: "/",
-        });
         return response
             .cookie("token", token, {
                 httpOnly: true,
                 secure: process.env.NODE_ENV === "production",
-                sameSite: "lax",
+                sameSite: "strict",
+                domain: env.WEB_ORIGIN,
                 maxAge: 7 * 24 * 60 * 60 * 1000,
             })
             .status(201)
