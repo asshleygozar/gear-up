@@ -38,7 +38,7 @@ export async function signIn(request: Request<any, any, SignInValidation>, respo
             .cookie("token", token, {
                 httpOnly: true,
                 secure: process.env.NODE_ENV === "production",
-                sameSite: "strict",
+                sameSite: "none",
                 maxAge: 7 * 24 * 60 * 60 * 1000,
                 path: "/",
             })
@@ -99,7 +99,7 @@ export async function signUp(request: Request<any, any, SignUpValidation>, respo
             .cookie("token", token, {
                 httpOnly: true,
                 secure: process.env.NODE_ENV === "production",
-                sameSite: "strict",
+                sameSite: "none",
                 maxAge: 7 * 24 * 60 * 60 * 1000,
             })
             .status(201)
