@@ -41,7 +41,9 @@ export async function middleware(request: NextRequest) {
 			);
 
 			if (!response.ok) {
-				return NextResponse.redirect(new URL('/signin', request.url));
+				const res = NextResponse.redirect(new URL('/signin', request.url));
+				res.cookies.delete('token');
+				return res;
 			}
 		}
 
