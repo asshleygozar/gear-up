@@ -1,10 +1,12 @@
 import { NextResponse } from 'next/server';
-import type { NextRequest } from 'next/server';
+import { NextRequest } from 'next/server';
 
 export async function middleware(request: NextRequest) {
 	try {
+		const pathName = request.url;
 		const token = request.cookies.get('token')?.value;
 		const protectedRoutes = ['/dashboard'];
+		const unAuthenticatedPaths = ['/', '/signin', '/signup'];
 		const isProtectedRoutes = protectedRoutes.some((route) =>
 			request.nextUrl.pathname.startsWith(route)
 		);
@@ -20,6 +22,10 @@ export async function middleware(request: NextRequest) {
 				credentials: 'include',
 			}
 		);
+
+		if (response.ok && unAuthenticatedPaths.includes(pathName)) {
+			return NextResponse.redirect(new URL('/dashboard', request.url));
+		}
 
 		if (response.status === 401 || response.status === 403) {
 			return NextResponse.redirect(new URL('/signin', request.url));
