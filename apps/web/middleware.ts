@@ -3,7 +3,7 @@ import { NextRequest } from 'next/server';
 
 export async function middleware(request: NextRequest) {
 	try {
-		const pathName = request.url;
+		const pathName = request.nextUrl.pathname;
 		const token = request.cookies.get('token')?.value;
 		const protectedRoutes = ['/dashboard'];
 		const unAuthenticatedPaths = ['/', '/signin', '/signup'];
