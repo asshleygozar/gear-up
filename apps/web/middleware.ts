@@ -15,13 +15,13 @@ export async function middleware(request: NextRequest) {
 			{
 				method: 'POST',
 				headers: {
-					Cookie: `token=${token}`,
+					Authorization: `Bearer ${token}`,
 				},
 				credentials: 'include',
 			}
 		);
 
-		if (response.status === 401) {
+		if (response.status === 401 || response.status === 403) {
 			return NextResponse.redirect(new URL('/signin', request.url));
 		}
 
