@@ -1,6 +1,5 @@
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
-import { env } from './env';
 
 export async function middleware(request: NextRequest) {
 	try {
@@ -12,7 +11,7 @@ export async function middleware(request: NextRequest) {
 		if (!isProtectedRoutes) return NextResponse.next();
 
 		const response = await fetch(
-			`${env.NEXT_PUBLIC_API_ORIGIN}/auth/validate`,
+			`${process.env.NEXT_PUBLIC_API_ORIGIN}/auth/validate`,
 			{
 				method: 'POST',
 				credentials: 'include',

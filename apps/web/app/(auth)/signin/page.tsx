@@ -14,7 +14,6 @@ import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import { APIResponse } from '@/utils/type';
-import { env } from '@/env';
 
 const initialState: APIResponse = {
 	success: false,
@@ -37,13 +36,16 @@ export default function SignInPage() {
 				email: formData.get('email'),
 				password: formData.get('password'),
 			};
-			const result = await fetch(`${env.NEXT_PUBLIC_API_ORIGIN}/auth/signin/`, {
-				method: 'POST',
-				headers: {
-					'Content-Type': 'application/json',
-				},
-				body: JSON.stringify(data),
-			});
+			const result = await fetch(
+				`${process.env.NEXT_PUBLIC_API_ORIGIN}/auth/signin/`,
+				{
+					method: 'POST',
+					headers: {
+						'Content-Type': 'application/json',
+					},
+					body: JSON.stringify(data),
+				}
+			);
 
 			const response = await result.json();
 
