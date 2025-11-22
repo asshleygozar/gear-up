@@ -3,7 +3,7 @@ import { NextRequest } from 'next/server';
 
 export async function middleware(request: NextRequest) {
 	try {
-		const pathName = request.nextUrl.pathname;
+		const { pathname } = request.nextUrl;
 		const token = request.cookies.get('token')?.value;
 		const protectedRoutes = ['/dashboard'];
 		const unAuthenticatedPaths = ['/', '/signin', '/signup'];
@@ -23,7 +23,7 @@ export async function middleware(request: NextRequest) {
 			}
 		);
 
-		if (response.ok && unAuthenticatedPaths.includes(pathName)) {
+		if (response.ok && unAuthenticatedPaths.includes(pathname)) {
 			return NextResponse.redirect(new URL('/dashboard', request.url));
 		}
 
