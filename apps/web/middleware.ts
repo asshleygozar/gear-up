@@ -12,6 +12,12 @@ export async function middleware(request: NextRequest) {
 		);
 		const isPublic = publicRoutes.includes(pathname);
 
+		if (!token) {
+			if (isProtectedRoutes) {
+				return NextResponse.redirect(new URL('/signin', request.url));
+			}
+			return NextResponse.next();
+		}
 		const response = await fetch(
 			`${process.env.NEXT_PUBLIC_API_ORIGIN}/auth/validate`,
 			{
@@ -23,17 +29,15 @@ export async function middleware(request: NextRequest) {
 			}
 		);
 
-		if (!token) {
-			return NextResponse.redirect(new URL('/signin', request.url));
+		if (!response.ok) {
+			if (isProtectedRoutes) {
+				NextResponse.redirect(new URL('/signin', request.url));
+			}
+
+			return NextResponse.next();
 		}
 		if (response.ok && isPublic) {
 			return NextResponse.redirect(new URL('/dashboard', request.url));
-		}
-		if (response.status === 401 || response.status === 403) {
-			return NextResponse.redirect(new URL('/signin', request.url));
-		}
-		if (!isProtectedRoutes) {
-			return NextResponse.next();
 		}
 
 		return NextResponse.next();
