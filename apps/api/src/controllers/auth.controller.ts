@@ -34,27 +34,18 @@ export async function signIn(request: Request<any, any, SignInValidation>, respo
             username: user.username,
         });
 
-        return response
-            .cookie("token", token, {
-                httpOnly: true,
-                secure: process.env.NODE_ENV === "production",
-                sameSite: "none",
-                maxAge: 7 * 24 * 60 * 60 * 1000,
-                path: "/",
-                partitioned: true,
-            })
-            .status(200)
-            .json({
-                success: true,
-                message: "Signed in successfully!",
-                data: {
-                    id: user.user_id,
-                    email: user.email,
-                    username: user.username,
-                    firstName: user.first_name,
-                    lastName: user.last_name,
-                },
-            });
+        return response.status(200).json({
+            success: true,
+            message: "Signed in successfully!",
+            data: {
+                id: user.user_id,
+                email: user.email,
+                username: user.username,
+                firstName: user.first_name,
+                lastName: user.last_name,
+            },
+            token,
+        });
     } catch (error) {
         console.error("Server error: ", error);
         if (error instanceof Prisma.PrismaClientKnownRequestError) {
@@ -96,27 +87,19 @@ export async function signUp(request: Request<any, any, SignUpValidation>, respo
             email: user.email,
             username: user.username,
         });
-        return response
-            .cookie("token", token, {
-                httpOnly: true,
-                secure: process.env.NODE_ENV === "production",
-                sameSite: "none",
-                maxAge: 7 * 24 * 60 * 60 * 1000,
-                partitioned: true,
-            })
-            .status(201)
-            .json({
-                success: true,
-                message: "Sign up successfully",
-                data: {
-                    id: user.user_id,
-                    email: user.email,
-                    username: user.username,
-                    firstName: user.first_name,
-                    lastName: user.last_name,
-                    createdAt: user.created_at,
-                },
-            });
+        return response.status(201).json({
+            success: true,
+            message: "Sign up successfully",
+            data: {
+                id: user.user_id,
+                email: user.email,
+                username: user.username,
+                firstName: user.first_name,
+                lastName: user.last_name,
+                createdAt: user.created_at,
+            },
+            token,
+        });
     } catch (error) {
         if (error instanceof Prisma.PrismaClientKnownRequestError) {
             throw new PrismaError(error);
