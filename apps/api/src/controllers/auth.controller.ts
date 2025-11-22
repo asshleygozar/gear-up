@@ -53,7 +53,6 @@ export async function signIn(request: Request<any, any, SignInValidation>, respo
                     firstName: user.first_name,
                     lastName: user.last_name,
                 },
-                token,
             });
     } catch (error) {
         console.error("Server error: ", error);
