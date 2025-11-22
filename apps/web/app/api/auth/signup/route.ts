@@ -1,4 +1,4 @@
-import { NextRequest } from 'next/server';
+import type { NextRequest } from 'next/server';
 import { NextResponse } from 'next/server';
 
 export async function POST(request: NextRequest) {
@@ -21,13 +21,16 @@ export async function POST(request: NextRequest) {
 		if (!apiResponse.ok)
 			return NextResponse.json(data, { status: apiResponse.status });
 
-		return NextResponse.json(data).cookies.set('token', data.token, {
+		const response = await NextResponse.json(data);
+		response.cookies.set('token', data.token, {
 			httpOnly: true,
 			secure: process.env.NODE_ENV === 'production',
 			sameSite: 'lax',
 			maxAge: 7 * 24 * 60 * 60 * 1000,
 			path: '/',
 		});
+
+		return response;
 	} catch (error) {
 		console.error('Server error: ', error);
 	}
