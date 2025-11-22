@@ -6,12 +6,12 @@ export async function middleware(request: NextRequest) {
 		const { pathname } = request.nextUrl;
 		const token = request.cookies.get('token')?.value;
 		const protectedRoutes = ['/dashboard'];
-		const unAuthenticatedPaths = ['/', '/signin', '/signup'];
+		const publicRoutes = ['/', '/signin', '/signup'];
 		const isProtectedRoutes = protectedRoutes.some((route) =>
 			request.nextUrl.pathname.startsWith(route)
 		);
-		if (!isProtectedRoutes) return NextResponse.next();
-		if (!token) return NextResponse.redirect(new URL('/signin', request.url));
+		const isPublic = publicRoutes.includes(pathname);
+
 		const response = await fetch(
 			`${process.env.NEXT_PUBLIC_API_ORIGIN}/auth/validate`,
 			{
@@ -23,12 +23,17 @@ export async function middleware(request: NextRequest) {
 			}
 		);
 
-		if (response.ok && unAuthenticatedPaths.includes(pathname)) {
+		if (!token) {
+			return NextResponse.redirect(new URL('/signin', request.url));
+		}
+		if (response.ok && isPublic) {
 			return NextResponse.redirect(new URL('/dashboard', request.url));
 		}
-
 		if (response.status === 401 || response.status === 403) {
 			return NextResponse.redirect(new URL('/signin', request.url));
+		}
+		if (!isProtectedRoutes) {
+			return NextResponse.next();
 		}
 
 		return NextResponse.next();
