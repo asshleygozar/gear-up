@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { NextRequest } from 'next/server';
 
+// Validate if has token on the middleware and do the proper validation on the dashboard instead using fetch
 export async function middleware(request: NextRequest) {
 	try {
 		const { pathname } = request.nextUrl;
@@ -17,34 +18,14 @@ export async function middleware(request: NextRequest) {
 			request.nextUrl.pathname.startsWith(route)
 		);
 
-		// Checks if has token + on landing page or auth page then if token is valid, redirects to dashboard
+		// Checks if has token + on landing page or auth page then automatically redirects to dashboard
 		if (token && (isPublicRoute || isAuthRoute)) {
 			return NextResponse.redirect(new URL('/dashboard', request.url));
 		}
 
-		// Checks is no token and accessing protected routes
+		// Checks if no token and accessing protected routes
 		if (!token && isProtectedRoute) {
 			return NextResponse.redirect(new URL('/signin', request.url));
-		}
-
-		// Checks if has token and accessing protected routes
-		if (token && isProtectedRoute) {
-			const response = await fetch(
-				`${process.env.NEXT_PUBLIC_API_ORIGIN}/auth/validate`,
-				{
-					method: 'POST',
-					headers: {
-						Authorization: `Bearer ${token}`,
-					},
-					credentials: 'include',
-				}
-			);
-
-			if (!response.ok) {
-				const res = NextResponse.redirect(new URL('/signin', request.url));
-				res.cookies.delete('token');
-				return res;
-			}
 		}
 
 		return NextResponse.next();
