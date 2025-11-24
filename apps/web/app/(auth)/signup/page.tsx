@@ -37,13 +37,17 @@ export default function SignUpPage() {
 				password: formData.get('password'),
 				confirmPassword: formData.get('confirmPassword'),
 			};
-			const result = await fetch(`/api/auth/signup/`, {
-				method: 'POST',
-				headers: {
-					'Content-Type': 'application/json',
-				},
-				body: JSON.stringify(data),
-			});
+			const result = await fetch(
+				`${process.env.NEXT_PUBLIC_API_ORIGIN}/auth/signup/`,
+				{
+					method: 'POST',
+					headers: {
+						'Content-Type': 'application/json',
+					},
+					credentials: 'include',
+					body: JSON.stringify(data),
+				}
+			);
 
 			const response = await result.json();
 			if (response.success) {
