@@ -20,6 +20,8 @@ const envSchema = z.object({
     JWT_SECRET: z.string().min(32, "JWT Secret should be 32 characters and more"),
     JWT_EXPIRES_IN: z.string().default("7d"),
     SALT: z.coerce.number().positive().default(12),
+    GOOGLE_CLIENT_ID: z.string(),
+    GOOGLE_CLIENT_SECRET: z.string(),
     CORS_ORIGIN: z
         .string()
         .or(z.array(z.string()))
