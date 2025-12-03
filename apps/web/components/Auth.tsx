@@ -36,17 +36,14 @@ export const SignIn = () => {
 				email: formData.get('email'),
 				password: formData.get('password'),
 			};
-			const result = await fetch(
-				`${process.env.NEXT_PUBLIC_API_ORIGIN}/auth/signin/`,
-				{
-					method: 'POST',
-					headers: {
-						'Content-Type': 'application/json',
-					},
-					credentials: 'include',
-					body: JSON.stringify(data),
-				}
-			);
+			const result = await fetch(`http://localhost:8080/auth/signin/`, {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json',
+				},
+				credentials: 'include',
+				body: JSON.stringify(data),
+			});
 
 			const response = await result.json();
 
