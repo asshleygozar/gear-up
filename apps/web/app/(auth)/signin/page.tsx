@@ -1,8 +1,6 @@
 'use client';
 
 import { SignIn } from '@/components/Auth';
-import { Button } from '@/components/ui/button';
-import { handleGoogleSignIn } from '@/lib/auth';
 import Image from 'next/image';
 
 export default function SignInPage() {
@@ -14,22 +12,9 @@ export default function SignInPage() {
 						Welcome Back!
 					</h1>
 					<h2 className='text-center text-[1rem] text-muted-foreground font-quick-sand font-medium'>
-						Use other services or use your email to continue with GearUp.
+						Use your email to continue with GearUp.
 					</h2>
 				</header>
-				<Button
-					variant={'secondary'}
-					onClick={handleGoogleSignIn}
-					className='px-8 py-6 flex gap-8 text-foreground text-[1rem] font-quick-sand font-semibold '
-				>
-					<Image
-						src={'/google-icon.svg'}
-						alt='Google logo'
-						height={30}
-						width={30}
-					/>
-					Continue with Google
-				</Button>
 				<p className='text-center'>or</p>
 				<SignIn />
 			</div>

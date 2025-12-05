@@ -2,7 +2,6 @@ import type { Metadata } from 'next';
 import { Outfit, Quicksand } from 'next/font/google';
 import './globals.css';
 import { Toaster } from '@/components/ui/sonner';
-import SessionProviderWrapper from '@/components/SessionProviderWrapper';
 
 const outfit = Outfit({
 	variable: '--font-outfit',
@@ -27,10 +26,8 @@ export default function RootLayout({
 	return (
 		<html lang='en'>
 			<body className={`${outfit.variable} ${quickSand.variable} antialiased`}>
-				<SessionProviderWrapper>
-					<Toaster position='top-center' />
-					{children}
-				</SessionProviderWrapper>
+				<Toaster position='top-center' />
+				{children}
 			</body>
 		</html>
 	);
