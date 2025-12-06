@@ -2,11 +2,11 @@ import { UserModel } from "#models/user.model.js";
 import type { Request, Response } from "express";
 import { comparePassword, hashPassword } from "#lib/password.js";
 import { generateJWTToken } from "#lib/jwt.js";
-import type { SignInValidation, SignUpValidation } from "#lib/auth.js";
+import type { SignInType, SignUpType } from "#lib/auth.js";
 import { PrismaError } from "#errors/prisma-error.js";
-import { Prisma } from "@prisma/client";
+import { Prisma } from "#generated/prisma/client";
 
-export async function signIn(request: Request<any, any, SignInValidation>, response: Response) {
+export async function signIn(request: Request<any, any, SignInType>, response: Response) {
     try {
         const { email, password } = request.body;
 
@@ -19,7 +19,7 @@ export async function signIn(request: Request<any, any, SignInValidation>, respo
                 error: "Invalid credentials",
             });
 
-        const isPasswordValid = await comparePassword(password, user.password);
+        const isPasswordValid = await comparePassword(password, user.password ?? "");
 
         if (!isPasswordValid)
             return response.status(401).json({
@@ -75,7 +75,7 @@ export type UserType = {
     lastName?: string;
 };
 
-export async function signUp(request: Request<any, any, SignUpValidation>, response: Response) {
+export async function signUp(request: Request<any, any, SignUpType>, response: Response) {
     try {
         const { email, password } = request.body;
 

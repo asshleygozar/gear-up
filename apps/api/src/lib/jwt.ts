@@ -7,10 +7,9 @@ export type JWTPayload = {
     email: string;
     username: string;
 };
+const secretKey = createSecretKey(env.JWT_SECRET, "utf-8");
 
 export const generateJWTToken = async (payload: JWTPayload) => {
-    const secretKey = createSecretKey(env.JWT_SECRET, "utf-8");
-
     return await new SignJWT(payload)
         .setProtectedHeader({ alg: "HS256" })
         .setIssuedAt()
@@ -19,7 +18,6 @@ export const generateJWTToken = async (payload: JWTPayload) => {
 };
 
 export const verifyToken = async (token: string): Promise<JWTPayload> => {
-    const secretKey = createSecretKey(env.JWT_SECRET, "utf-8");
     const payload = await jwtVerify(token, secretKey);
 
     return payload as unknown as JWTPayload;
