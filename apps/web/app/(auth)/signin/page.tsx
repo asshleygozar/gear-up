@@ -15,7 +15,6 @@ export default function SignInPage() {
 						Use your email to continue with GearUp.
 					</h2>
 				</header>
-				<p className='text-center'>or</p>
 				<SignIn />
 			</div>
 			<div className='bg-primary h-screen w-[50vw] grid'>

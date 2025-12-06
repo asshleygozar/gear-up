@@ -15,6 +15,7 @@ import { useActionState } from 'react';
 import { APIResponse } from '@/utils/type';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
+import { clientEnv } from '@/env';
 
 const initialState: APIResponse = {
 	success: false,
@@ -36,14 +37,17 @@ export const SignIn = () => {
 				email: formData.get('email'),
 				password: formData.get('password'),
 			};
-			const result = await fetch(`http://localhost:8080/auth/signin/`, {
-				method: 'POST',
-				headers: {
-					'Content-Type': 'application/json',
-				},
-				credentials: 'include',
-				body: JSON.stringify(data),
-			});
+			const result = await fetch(
+				`${clientEnv.NEXT_PUBLIC_API_ORIGIN}/auth/signin/`,
+				{
+					method: 'POST',
+					headers: {
+						'Content-Type': 'application/json',
+					},
+					credentials: 'include',
+					body: JSON.stringify(data),
+				}
+			);
 
 			const response = await result.json();
 
