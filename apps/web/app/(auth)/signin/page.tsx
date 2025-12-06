@@ -1,5 +1,3 @@
-'use client';
-
 import { SignIn } from '@/components/Auth';
 import Image from 'next/image';
 
