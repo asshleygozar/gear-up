@@ -4,7 +4,7 @@ import { comparePassword, hashPassword } from "#lib/password.js";
 import { generateJWTToken } from "#lib/jwt.js";
 import type { SignInType, SignUpType } from "#lib/auth.js";
 import { PrismaError } from "#errors/prisma-error.js";
-import { Prisma } from "#generated/prisma/client";
+import { Prisma } from "#generated/prisma/client.js";
 
 export async function signIn(request: Request<any, any, SignInType>, response: Response) {
     try {
