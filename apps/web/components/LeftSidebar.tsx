@@ -41,7 +41,7 @@ const items = [
 export function LeftSidebar() {
 	return (
 		<CategoryProvider>
-			<Sidebar className='p-[1rem]'>
+			<Sidebar className='p-4'>
 				<SidebarContent>
 					<BrandNameLogo />
 					<SidebarGroup>
