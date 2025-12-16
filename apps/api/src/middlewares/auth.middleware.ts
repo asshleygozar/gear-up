@@ -1,7 +1,9 @@
 import type { Request, Response, NextFunction } from "express";
 import { verifyToken, type JWTPayload } from "#lib/jwt.js";
-
-interface AuthenticatedRequest extends Request {
+import type { ParamsDictionary } from "express-serve-static-core";
+import type { ParsedQs } from "qs";
+export interface AuthenticatedRequest<P = ParamsDictionary, ResBody = any, ReqBody = any, ReqQuery = ParsedQs>
+    extends Request<P, ResBody, ReqBody, ReqQuery> {
     user?: JWTPayload;
 }
 
