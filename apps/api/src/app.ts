@@ -1,12 +1,14 @@
 import express from "express";
 import cookieParse from "cookie-parser";
 import user from "#routes/auth.route.js";
+import transaction from "#routes/transaction.route.js";
 import cors from "cors";
 import helmet from "helmet";
 import rateLimit from "express-rate-limit";
 import { env } from "./config/env.js";
 import type { Request, Response } from "express";
 import { errorHandler } from "#middlewares/error.middleware.js";
+import { authenticateToken } from "#middlewares/auth.middleware.js";
 
 const app = express();
 const limiter = rateLimit({
@@ -35,7 +37,8 @@ app.get("/health", (request: Request, response: Response) => {
     });
 });
 
-app.use("/auth", limiter, user);
+app.use("/api/auth", limiter, user);
+app.use("/api/transactions", authenticateToken, transaction);
 app.use(errorHandler);
 
 export default app;
