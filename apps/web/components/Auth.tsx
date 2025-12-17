@@ -48,7 +48,7 @@ export const SignIn = () => {
 
 			const response = await result.json();
 
-			if (response.success || result.ok) {
+			if (response.success) {
 				toast('Sign in successfully!');
 				router.push('/dashboard');
 			}
@@ -180,7 +180,7 @@ export const SignUp = () => {
 			});
 
 			const response = await result.json();
-			if (response.success || result.ok) {
+			if (response.success) {
 				toast('Created successfully!');
 				router.push('/dashboard');
 			}
