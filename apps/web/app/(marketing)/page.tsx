@@ -68,7 +68,7 @@ const Home = () => {
 							<Link href={'/'}>
 								<Button
 									variant={'default'}
-									className='text-primary-foreground font-inter text-lg px-8 py-6 hover:bg-violet-500 hover:text-primary-foreground cursor-pointer'
+									className='text-primary-foreground font-inter text-lg px-8 py-6 hover:bg-blend-lighten hover:text-primary-foreground cursor-pointer'
 								>
 									Get started
 								</Button>
