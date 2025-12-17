@@ -5,7 +5,7 @@ export const POST = async (request: NextRequest) => {
 		const body = await request.json();
 
 		const apiResponse = await fetch(
-			`${process.env.NEXT_PUBLIC_API_ORIGIN}/auth/signup`,
+			`${process.env.NEXT_PUBLIC_API_ORIGIN}/api/auth/signup`,
 			{
 				method: 'POST',
 				headers: {
