@@ -3,7 +3,7 @@ import { PrismaError } from "#errors/prisma-error.js";
 import { Prisma } from "#generated/prisma/client.js";
 import { CreateTransactionType } from "#lib/transaction-type.js";
 import { AuthenticatedRequest } from "#middlewares/auth.middleware.js";
-import { TransactionModel } from "#models/transaction.model.js";
+import { createTransactionAndUpdateAccount } from "#services/transaction.service.js";
 import type { Response } from "express";
 
 export async function createTransaction(
@@ -14,7 +14,7 @@ export async function createTransaction(
         if (!request.user?.id) {
             throw new GeneralError("Unauthenticated user", "User is not authenticated or not authorized", 401);
         }
-        const transaction = await TransactionModel.create({ data: request.body, userId: request.user.id });
+        const transaction = await createTransactionAndUpdateAccount({ data: request.body, userId: request.user.id });
 
         if (!transaction) {
             return response
