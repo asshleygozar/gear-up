@@ -86,6 +86,8 @@ export const createTransactionAndUpdateAccount = async ({
                     ]);
 
                     return receiverAccountUpdate;
+                default:
+                    return new GeneralError("Type error", "Unknown or transaction type not provided", 400);
             }
         });
 
