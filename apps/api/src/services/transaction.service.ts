@@ -1,6 +1,7 @@
 import "dotenv/config.js";
 import { prisma } from "#lib/prisma.js";
 import { CreateTransactionType } from "#lib/transaction-type.js";
+import GeneralError from "#errors/general-error.js";
 
 export const createTransactionAndUpdateAccount = async ({
     data,
@@ -50,6 +51,41 @@ export const createTransactionAndUpdateAccount = async ({
                         },
                     });
                     return expenseUpdate;
+                case "transfer":
+                    if (!transaction.account_id_receiver) {
+                        throw new GeneralError("Incomplete Info error", "Receiver Account is not provided", 400);
+                    }
+
+                    const [_, receiverAccountUpdate] = await Promise.all([
+                        await tx.accounts.update({
+                            where: {
+                                account_id: transaction.account_id,
+                            },
+                            data: {
+                                total_expense: {
+                                    increment: transaction.transaction_amount,
+                                },
+                                total_balance: {
+                                    decrement: transaction.transaction_amount,
+                                },
+                            },
+                        }),
+                        await tx.accounts.update({
+                            where: {
+                                account_id: transaction.account_id_receiver,
+                            },
+                            data: {
+                                total_income: {
+                                    increment: transaction.transaction_amount,
+                                },
+                                total_balance: {
+                                    increment: transaction.transaction_amount,
+                                },
+                            },
+                        }),
+                    ]);
+
+                    return receiverAccountUpdate;
             }
         });
 
