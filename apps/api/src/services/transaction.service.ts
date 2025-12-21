@@ -43,7 +43,7 @@ export const createTransactionAndUpdateAccount = async ({
                         },
                         data: {
                             total_expense: {
-                                decrement: transaction.transaction_amount,
+                                increment: transaction.transaction_amount,
                             },
                             total_balance: {
                                 decrement: transaction.transaction_amount,
