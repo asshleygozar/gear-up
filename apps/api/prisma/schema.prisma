@@ -8,28 +8,31 @@ datasource db {
 }
 
 model accounts {
-  account_id    Int            @id @default(autoincrement())
-  account_name  String         @db.VarChar(255)
-  account_type  String         @db.VarChar(255)
-  total_balance Decimal        @db.Decimal(10, 2)
-  total_income  Decimal        @db.Decimal(10, 2)
-  total_expense Decimal        @db.Decimal(10, 2)
-  user_id       Int
-  users         users          @relation(fields: [user_id], references: [user_id], onDelete: Cascade, onUpdate: NoAction)
-  transactions  transactions[]
+  account_id                                              Int            @id @default(autoincrement())
+  account_name                                            String         @db.VarChar(255)
+  account_type                                            String         @db.VarChar(255)
+  total_balance                                           Decimal        @db.Decimal(10, 2)
+  total_income                                            Decimal        @db.Decimal(10, 2)
+  total_expense                                           Decimal        @db.Decimal(10, 2)
+  user_id                                                 Int
+  users                                                   users          @relation(fields: [user_id], references: [user_id], onDelete: Cascade, onUpdate: NoAction)
+  transactions_transactions_account_id_receiverToaccounts transactions[] @relation("transactions_account_id_receiverToaccounts")
+  transactions                                            transactions[]
 }
 
 model transactions {
-  transaction_id          Int           @id @default(autoincrement())
-  transaction_category    String        @db.VarChar(255)
-  transaction_amount      Decimal       @db.Decimal(10, 2)
-  transaction_date        DateTime      @default(now()) @db.Timestamp(6)
-  transaction_description String?       @db.VarChar(255)
-  account_id              Int
-  user_id                 Int
-  transaction_type        transac_type?
-  accounts                accounts      @relation(fields: [account_id], references: [account_id], onDelete: Cascade, onUpdate: NoAction)
-  users                   users         @relation(fields: [user_id], references: [user_id], onDelete: Cascade, onUpdate: NoAction)
+  transaction_id                                      Int           @id @default(autoincrement())
+  transaction_category                                String        @db.VarChar(255)
+  transaction_amount                                  Decimal       @db.Decimal(10, 2)
+  transaction_date                                    DateTime      @default(now()) @db.Timestamp(6)
+  transaction_description                             String?       @db.VarChar(255)
+  account_id                                          Int
+  user_id                                             Int
+  transaction_type                                    transac_type?
+  account_id_receiver                                 Int?
+  accounts_transactions_account_id_receiverToaccounts accounts?     @relation("transactions_account_id_receiverToaccounts", fields: [account_id_receiver], references: [account_id], onDelete: NoAction, onUpdate: NoAction, map: "fk_account_receiver")
+  accounts                                            accounts      @relation(fields: [account_id], references: [account_id], onDelete: Cascade, onUpdate: NoAction)
+  users                                               users         @relation(fields: [user_id], references: [user_id], onDelete: Cascade, onUpdate: NoAction)
 }
 
 model users {
