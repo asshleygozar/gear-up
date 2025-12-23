@@ -1,19 +1,12 @@
 'use client';
-
-import { LeftSidebar } from '@/components/LeftSidebar';
-import { SidebarProvider, SidebarTrigger } from '@/components/ui/sidebar';
 import QueryProvider from './provider';
+import DashboardNavigation from '@/components/DashboardNavigation';
 
 const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
 	return (
 		<QueryProvider>
-			<SidebarProvider>
-				<LeftSidebar />
-				<main className='h-full w-full'>
-					<SidebarTrigger />
-					{children}
-				</main>
-			</SidebarProvider>
+			<DashboardNavigation />
+			<main className='h-full w-full p-12'>{children}</main>
 		</QueryProvider>
 	);
 };
