@@ -1,6 +1,6 @@
 // Transactions Route
 import { Router } from "express";
-import { CreateTransactionSchema } from "#lib/transaction-type.js";
+import { CreateTransactionSchema } from "#lib/transaction-schema.js";
 import { validateBody } from "#middlewares/validation.middleware.js";
 import { createTransaction } from "#controllers/transaction.controller.js";
 

@@ -1,7 +1,7 @@
 import GeneralError from "#errors/general-error.js";
 import { PrismaError } from "#errors/prisma-error.js";
 import { Prisma } from "#generated/prisma/client.js";
-import { CreateTransactionType } from "#lib/transaction-type.js";
+import { CreateTransactionType } from "#lib/transaction-schema.js";
 import { AuthenticatedRequest } from "#middlewares/auth.middleware.js";
 import { createTransactionAndUpdateAccount } from "#services/transaction.service.js";
 import type { Response } from "express";

@@ -1,6 +1,6 @@
 import "dotenv/config.js";
 import { prisma } from "#lib/prisma.js";
-import { CreateTransactionType } from "#lib/transaction-type.js";
+import { CreateTransactionType } from "#lib/transaction-schema.js";
 import GeneralError from "#errors/general-error.js";
 
 export const createTransactionAndUpdateAccount = async ({
