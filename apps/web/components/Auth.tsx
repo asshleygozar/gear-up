@@ -12,7 +12,7 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Loader2Icon } from 'lucide-react';
 import { useActionState } from 'react';
-import { APIResponse } from '@/utils/type';
+import { APIResponse } from '@/utils/types';
 import { toast } from 'sonner';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
