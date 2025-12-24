@@ -21,7 +21,7 @@ import {
 	SelectTrigger,
 	SelectValue,
 } from './ui/select';
-import { useMutation } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { Textarea } from './ui/textarea';
 import { Button } from './ui/button';
 import { toast } from 'sonner';
@@ -49,9 +49,13 @@ const createTransaction = async (
 
 export const NewTransaction = () => {
 	const [amount, setAmount] = useState('');
+	const query = useQueryClient();
 	const { mutate } = useMutation({
 		mutationFn: createTransaction,
 		onSuccess: (data) => {
+			query.invalidateQueries({ queryKey: ['net-income'] });
+			query.invalidateQueries({ queryKey: ['total-expense'] });
+			query.invalidateQueries({ queryKey: ['total-income'] });
 			toast.success(data.message || 'Transaction created successfully');
 		},
 		onError: (error: Error) => {
@@ -73,6 +77,7 @@ export const NewTransaction = () => {
 			transaction_description:
 				(formData.get('transaction_description') as string) || undefined,
 		};
+		setAmount('');
 		mutate(data);
 	};
 	const handleAmountOnChange = (event: React.ChangeEvent<HTMLInputElement>) => {

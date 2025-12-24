@@ -7,14 +7,22 @@ import {
 } from './ui/select';
 import { useQuery } from '@tanstack/react-query';
 import { APIResponse } from '@/utils/types';
+import {
+	Card,
+	CardContent,
+	CardDescription,
+	CardHeader,
+	CardTitle,
+} from './ui/card';
+import { Skeleton } from './ui/skeleton';
 
 type AccountType = {
 	account_id: number;
 	account_name: string;
-	account_type?: string;
-	total_balance?: number;
-	total_income?: number;
-	total_expense?: number;
+	account_type: string;
+	total_balance: number;
+	total_income: number;
+	total_expense: number;
 };
 
 const fetchAccounts = async (): Promise<APIResponse<AccountType[]>> => {
@@ -65,5 +73,83 @@ export const AccountSelect = () => {
 				))}
 			</SelectContent>
 		</Select>
+	);
+};
+
+export const NetIncome = () => {
+	const { data, isLoading } = useQuery({
+		queryKey: ['net-income'],
+		queryFn: fetchAccounts,
+	});
+	return (
+		<Card>
+			<CardHeader>
+				<CardTitle>Net Income</CardTitle>
+				<CardDescription>Total balance</CardDescription>
+				<CardContent>
+					{isLoading ? (
+						<Skeleton className='w-full' />
+					) : (
+						<p>
+							{data?.data
+								?.map((element) => element.total_balance)
+								.reduce((preValue, accumulator) => preValue + accumulator)}
+						</p>
+					)}
+				</CardContent>
+			</CardHeader>
+		</Card>
+	);
+};
+
+export const TotalExpenses = () => {
+	const { data, isLoading } = useQuery({
+		queryKey: ['total-expense'],
+		queryFn: fetchAccounts,
+	});
+	return (
+		<Card>
+			<CardHeader>
+				<CardTitle>Expenses</CardTitle>
+				<CardDescription>Total expenses</CardDescription>
+				<CardContent>
+					{isLoading ? (
+						<Skeleton className='w-full' />
+					) : (
+						<p>
+							{data?.data
+								?.map((element) => element.total_expense)
+								.reduce((preValue, accumulator) => preValue + accumulator)}
+						</p>
+					)}
+				</CardContent>
+			</CardHeader>
+		</Card>
+	);
+};
+
+export const TotalIncome = () => {
+	const { data, isLoading } = useQuery({
+		queryKey: ['total-income'],
+		queryFn: fetchAccounts,
+	});
+	return (
+		<Card>
+			<CardHeader>
+				<CardTitle>Income</CardTitle>
+				<CardDescription>Total income balance</CardDescription>
+				<CardContent>
+					{isLoading ? (
+						<Skeleton className='w-full' />
+					) : (
+						<p>
+							{data?.data
+								?.map((element) => element.total_income)
+								.reduce((preValue, accumulator) => preValue + accumulator)}
+						</p>
+					)}
+				</CardContent>
+			</CardHeader>
+		</Card>
 	);
 };
