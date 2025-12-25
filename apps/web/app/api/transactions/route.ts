@@ -16,11 +16,41 @@ export async function POST(request: NextRequest) {
 					Authorization: `Bearer ${token}`,
 				},
 				body: JSON.stringify(body),
-			}   
+			}
 		);
 
 		const data = await apiResponse.json();
 
+		if (!apiResponse.ok || !data.success) {
+			return NextResponse.json(data, { status: apiResponse.status });
+		}
+
+		return NextResponse.json(data, { status: apiResponse.status });
+	} catch (error) {
+		if (error) {
+			return NextResponse.json({
+				success: false,
+				message: 'Server error',
+			});
+		}
+	}
+}
+
+export async function GET() {
+	try {
+		const token = await getToken();
+
+		const apiResponse = await fetch(
+			`${process.env.NEXT_PUBLIC_API_ORIGIN}/api/transactions/`,
+			{
+				method: 'GET',
+				headers: {
+					Authorization: `Bearers ${token}`,
+				},
+			}
+		);
+
+		const data = await apiResponse.json();
 		if (!apiResponse.ok || !data.success) {
 			return NextResponse.json(data, { status: apiResponse.status });
 		}
