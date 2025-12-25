@@ -11,7 +11,7 @@ export type ValidationIssue = {
 	message: string;
 };
 
-export type TransactionData = {
+export type TransactionType = {
 	transaction_amount: string;
 	account_id: string;
 	transaction_type: string;

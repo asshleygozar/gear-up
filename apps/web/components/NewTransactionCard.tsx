@@ -26,11 +26,11 @@ import { Textarea } from './ui/textarea';
 import { Button } from './ui/button';
 import { toast } from 'sonner';
 import { AccountSelect } from './Accounts';
-import { APIResponse, TransactionData } from '@/utils/types';
+import { APIResponse, TransactionType } from '@/utils/types';
 
 // Request to API Proxy
 const createTransaction = async (
-	data: TransactionData
+	data: TransactionType
 ): Promise<APIResponse> => {
 	const response = await fetch('/api/transactions', {
 		method: 'POST',
