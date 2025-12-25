@@ -12,6 +12,7 @@ export type ValidationIssue = {
 };
 
 export type TransactionType = {
+	transaction_id?: number;
 	transaction_amount: string;
 	account_id: string;
 	transaction_type: string;
