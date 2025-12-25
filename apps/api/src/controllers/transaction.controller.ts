@@ -3,6 +3,7 @@ import { PrismaError } from "#errors/prisma-error.js";
 import { Prisma } from "#generated/prisma/client.js";
 import { CreateTransactionType } from "#lib/transaction-schema.js";
 import { AuthenticatedRequest } from "#middlewares/auth.middleware.js";
+import { TransactionModel } from "#models/transaction.model.js";
 import { createTransactionAndUpdateAccount } from "#services/transaction.service.js";
 import type { Response } from "express";
 
@@ -25,6 +26,24 @@ export async function createTransaction(
         return response.status(401).json({ success: true, message: "Transaction created successfully" });
     } catch (error) {
         console.error("Server error: ", error);
+        if (error instanceof Prisma.PrismaClientKnownRequestError) {
+            throw new PrismaError(error);
+        }
+
+        throw new GeneralError("Server error", "Failed to create new transaction", 500);
+    }
+}
+
+export async function getAllTransactions(request: AuthenticatedRequest, response: Response) {
+    try {
+        if (!request.user?.id) {
+            throw new GeneralError("Unauthenticated user", "User is not authenticated ", 401);
+        }
+
+        const transactions = await TransactionModel.findAllTransactions(request.user.id);
+
+        return response.json({ success: true, message: "Transactions fetch successfully!", data: transactions });
+    } catch (error) {
         if (error instanceof Prisma.PrismaClientKnownRequestError) {
             throw new PrismaError(error);
         }
