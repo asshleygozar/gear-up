@@ -91,7 +91,7 @@ export const NewTransaction = () => {
 
 	return (
 		<Dialog>
-			<DialogTrigger className='flex items-center bg-primary py-4 px-3 rounded-2xl hover:opacity-80 shadow-sm cursor-pointer'>
+			<DialogTrigger className='flex items-center bg-primary p-2 rounded-2xl hover:opacity-80 shadow-sm cursor-pointer'>
 				<p className='flex gap-2 items-center text-[0.8rem] text-background'>
 					<Plus /> Create
 				</p>

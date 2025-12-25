@@ -1,11 +1,10 @@
 import { BrandNameLogo } from './Brand';
 import { NewTransaction } from './NewTransactionCard';
-import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar';
 import { Input } from './ui/input';
 
 export default function DashboardNavigation() {
 	return (
-		<nav className='flex justify-between gap-14 px-8 py-6 h-12 shadow-accent'>
+		<nav className='flex justify-between items-center p-4 bg-white shadow-accent sticky top-0 border-b'>
 			<BrandNameLogo />
 			<Input
 				type='search'
