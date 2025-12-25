@@ -82,7 +82,7 @@ export const NetIncome = () => {
 		queryFn: fetchAccounts,
 	});
 	return (
-		<Card>
+		<Card className='col-span-2'>
 			<CardHeader>
 				<CardTitle>Net Income</CardTitle>
 				<CardDescription>Total balance</CardDescription>
@@ -108,7 +108,7 @@ export const TotalExpenses = () => {
 		queryFn: fetchAccounts,
 	});
 	return (
-		<Card>
+		<Card className='row-span-1'>
 			<CardHeader>
 				<CardTitle>Expenses</CardTitle>
 				<CardDescription>Total expenses</CardDescription>
@@ -134,7 +134,7 @@ export const TotalIncome = () => {
 		queryFn: fetchAccounts,
 	});
 	return (
-		<Card>
+		<Card className='row-span-1'>
 			<CardHeader>
 				<CardTitle>Income</CardTitle>
 				<CardDescription>Total income balance</CardDescription>
@@ -150,6 +150,22 @@ export const TotalIncome = () => {
 					)}
 				</CardContent>
 			</CardHeader>
+		</Card>
+	);
+};
+
+export const Accounts = () => {
+	return (
+		<Card>
+			<CardHeader>
+				<CardTitle>Accounts</CardTitle>
+				<CardDescription>Your accounts</CardDescription>
+			</CardHeader>
+			<CardContent>
+				{Array.from({ length: 5 }).map((_, index) => (
+					<p key={index}>{`Account No. ${index}`}</p>
+				))}
+			</CardContent>
 		</Card>
 	);
 };
