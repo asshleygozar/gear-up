@@ -1,18 +1,29 @@
 {
-  "name": "gearup",
-  "private": true,
-  "scripts": {
-    "dev": "turbo run dev",
-    "build": "turbo run build",
-    "lint": "turbo run lint",
-    "test": "turbo run test"
-  },
-  "workspaces": [
-    "apps/*",
-    "packages/*"
-  ],
-  "devDependencies": {
-    "turbo": "^2.6.3"
-  },
-  "packageManager": "npm@11.6.2"
+	"name": "gearup",
+	"private": true,
+	"scripts": {
+		"dev": "turbo run dev",
+		"dev:api": "turbo run dev --filter=api",
+		"dev:web": "turbo run dev --filter=web",
+		"build": "turbo run build",
+		"build:api": "turbo run build --filter=api",
+		"build:web": "turbo run build --filter=web",
+		"lint": "turbo run lint",
+		"lint:api": "turbo run lint --filter=api",
+		"lint:web": "turbo run lint --filter=web",
+		"test": "turbo run test",
+		"test:api": "turbo run test --filter=api",
+		"test:web": "turbo run test --filter=web",
+		"start": "turbo run start",
+		"start:api": "turbo run start --filter=api",
+		"start:web": "turbo run start --filter=web"
+	},
+	"workspaces": [
+		"apps/*",
+		"packages/*"
+	],
+	"devDependencies": {
+		"turbo": "^2.6.3"
+	},
+	"packageManager": "npm@11.6.2"
 }
