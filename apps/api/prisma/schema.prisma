@@ -30,7 +30,7 @@ model transactions {
   user_id                                             Int
   transaction_type                                    transac_type?
   account_id_receiver                                 Int?
-  accounts_transactions_account_id_receiverToaccounts accounts?     @relation("transactions_account_id_receiverToaccounts", fields: [account_id_receiver], references: [account_id], onDelete: NoAction, onUpdate: NoAction, map: "fk_account_receiver")
+  accounts_transactions_account_id_receiverToaccounts accounts?     @relation("transactions_account_id_receiverToaccounts", fields: [account_id_receiver], references: [account_id], onDelete: Cascade, onUpdate: NoAction, map: "fk_account_receiver")
   accounts                                            accounts      @relation(fields: [account_id], references: [account_id], onDelete: Cascade, onUpdate: NoAction)
   users                                               users         @relation(fields: [user_id], references: [user_id], onDelete: Cascade, onUpdate: NoAction)
 }
