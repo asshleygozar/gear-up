@@ -1,11 +1,12 @@
 // Transactions Route
 import { Router } from "express";
-import { TransactionSchema } from "#lib/transaction-schema.js";
+import { CreateTransactionSchema, UpdateTransactionSchema } from "#lib/transaction-schema.js";
 import { validateBody } from "#middlewares/validation.middleware.js";
-import { createTransaction, getAllTransactions } from "#controllers/transaction.controller.js";
+import { createTransaction, getAllTransactions, updateTransaction } from "#controllers/transaction.controller.js";
 
 const router = Router();
 router.get("/", getAllTransactions);
-router.post("/create", validateBody(TransactionSchema), createTransaction);
+router.post("/create", validateBody(CreateTransactionSchema), createTransaction);
+router.put("/update-transaction", validateBody(UpdateTransactionSchema), updateTransaction);
 
 export default router;

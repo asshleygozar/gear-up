@@ -7,10 +7,7 @@ import { TransactionModel } from "#models/transaction.model.js";
 import { createTransactionAndUpdateAccount } from "#services/transaction.service.js";
 import type { Response } from "express";
 
-export async function createTransaction(
-    request: AuthenticatedRequest<any, any, CreateTransactionType>,
-    response: Response
-) {
+export async function createTransaction(request: AuthenticatedRequest<any, any, CreateTransactionType>, response: Response) {
     try {
         if (!request.user?.id) {
             throw new GeneralError("Unauthenticated user", "User is not authenticated or not authorized", 401);
@@ -49,5 +46,23 @@ export async function getAllTransactions(request: AuthenticatedRequest, response
         }
 
         throw new GeneralError("Server error", "Failed to create new transaction", 500);
+    }
+}
+
+export async function updateTransaction(request: AuthenticatedRequest, response: Response) {
+    try {
+        const userId = request.user?.id;
+
+        if (!userId) throw new GeneralError("Unauthenticated user", " User is not authenticated", 401);
+
+        const transaction = await TransactionModel.updateTransaction({ userId: userId, data: request.body });
+
+        return response.json({ success: true, message: "Transaction updated successfully!", data: transaction });
+    } catch (error) {
+        if (error instanceof Prisma.PrismaClientKnownRequestError) {
+            throw new PrismaError(error);
+        }
+
+        throw new GeneralError("Server error", "Failed to update transaction", 500);
     }
 }
