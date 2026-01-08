@@ -70,3 +70,23 @@ export async function deleteAccount(request: AuthenticatedRequest, response: Res
         throw new GeneralError("Server error", "Failed to delete account", 500);
     }
 }
+
+export async function updateAccount(request: AuthenticatedRequest, response: Response) {
+    try {
+        const userId = request.user?.id;
+        if (!userId)
+            return response
+                .status(401)
+                .json({ success: false, message: "User is not authenticated", error: "Unauthenticated" });
+
+        const account = await AccountModel.updateAccount({ userId: userId, data: request.body });
+
+        return response.status(201).json({ success: true, message: "Account updated successfully", data: account });
+    } catch (error) {
+        if (error instanceof Prisma.PrismaClientKnownRequestError) {
+            throw new PrismaError(error);
+        }
+
+        throw new GeneralError("Server error", "Failed to update account", 500);
+    }
+}
