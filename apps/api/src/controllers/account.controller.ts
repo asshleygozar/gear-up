@@ -37,7 +37,7 @@ export async function createAccount(request: AuthenticatedRequest, response: Res
 
         const account = await AccountModel.createAccount({ userId: userId, data: request.body });
 
-        return response.json({ success: false, message: "Account created successfully!", data: account });
+        return response.json({ success: true, message: "Account created successfully!", data: account });
     } catch (error) {
         console.error("Server error: ", error);
         if (error instanceof Prisma.PrismaClientKnownRequestError) {
