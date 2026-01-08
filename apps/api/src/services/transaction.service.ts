@@ -1,6 +1,6 @@
 import "dotenv/config.js";
 import { prisma } from "#lib/prisma.js";
-import { CreateTransactionType } from "#lib/transaction-schema.js";
+import { CreateTransactionType, UpdateTransactionType as DeleteTransactionType } from "#lib/transaction-schema.js";
 import GeneralError from "#errors/general-error.js";
 
 export const createTransactionAndUpdateAccount = async ({
@@ -93,6 +93,93 @@ export const createTransactionAndUpdateAccount = async ({
 
         return result;
     } catch (error) {
-        console.error("Transaction failed, all operations rolled back: ", error);
+        if (error) throw new GeneralError("Service error", "Failed to create and update account", 500);
+    }
+};
+
+export const deleteTransactionAndUpdateAccount = async ({ data }: { data: DeleteTransactionType }) => {
+    try {
+        const result = await prisma.$transaction(async (tx) => {
+            const deleteTransaction = await tx.transactions.delete({
+                where: {
+                    transaction_id: data.transaction_id,
+                },
+            });
+
+            switch (deleteTransaction.transaction_type) {
+                case "income":
+                    const incomeUpdate = await tx.accounts.update({
+                        where: {
+                            account_id: deleteTransaction.account_id,
+                        },
+                        data: {
+                            total_income: {
+                                decrement: deleteTransaction.transaction_amount,
+                            },
+                            total_balance: {
+                                decrement: deleteTransaction.transaction_amount,
+                            },
+                        },
+                    });
+                    return incomeUpdate;
+
+                case "expense":
+                    const expenseUpdate = await tx.accounts.update({
+                        where: {
+                            account_id: deleteTransaction.account_id,
+                        },
+                        data: {
+                            total_expense: {
+                                decrement: deleteTransaction.transaction_amount,
+                            },
+                            total_balance: {
+                                increment: deleteTransaction.transaction_amount,
+                            },
+                        },
+                    });
+                    return expenseUpdate;
+                case "transfer":
+                    if (!deleteTransaction.account_id_receiver) {
+                        throw new GeneralError("Incomplete Info error", "Receiver Account is not provided", 400);
+                    }
+
+                    const [_, receiverAccountDelete] = await Promise.all([
+                        await tx.accounts.update({
+                            where: {
+                                account_id: deleteTransaction.account_id,
+                            },
+                            data: {
+                                total_expense: {
+                                    decrement: deleteTransaction.transaction_amount,
+                                },
+                                total_balance: {
+                                    increment: deleteTransaction.transaction_amount,
+                                },
+                            },
+                        }),
+                        await tx.accounts.update({
+                            where: {
+                                account_id: deleteTransaction.account_id_receiver,
+                            },
+                            data: {
+                                total_income: {
+                                    decrement: deleteTransaction.transaction_amount,
+                                },
+                                total_balance: {
+                                    decrement: deleteTransaction.transaction_amount,
+                                },
+                            },
+                        }),
+                    ]);
+
+                    return receiverAccountDelete;
+            }
+        });
+
+        return result;
+    } catch (error) {
+        if (error) {
+            throw new GeneralError("Service error", "Failed to delete transaction and update account", 500);
+        }
     }
 };
