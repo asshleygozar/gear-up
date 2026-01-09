@@ -3,6 +3,7 @@ import cookieParse from "cookie-parser";
 import user from "#routes/auth.route.js";
 import transaction from "#routes/transaction.route.js";
 import account from "#routes/account.route.js";
+import budget from "#routes/budget.route.js";
 import cors from "cors";
 import helmet from "helmet";
 import rateLimit from "express-rate-limit";
@@ -41,6 +42,7 @@ app.get("/health", (request: Request, response: Response) => {
 app.use("/api/auth", limiter, user);
 app.use("/api/transactions", authenticateToken, transaction);
 app.use("/api/accounts", authenticateToken, account);
+app.use("/api/budgets", authenticateToken, budget);
 app.use(errorHandler);
 
 export default app;
