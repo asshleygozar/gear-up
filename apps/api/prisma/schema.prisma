@@ -50,15 +50,16 @@ model users {
 }
 
 model budgets {
-  budget_id          Int                 @id @default(autoincrement())
-  budget_amount      Int?
-  budget_start       DateTime?           @db.Timestamp(6)
-  budget_end         DateTime?           @db.Timestamp(6)
-  budget_period      budget_period_type?
-  budget_category    String?             @db.VarChar(255)
-  budget_description String?             @db.VarChar(255)
-  user_id            Int?
-  users              users?              @relation(fields: [user_id], references: [user_id], onDelete: NoAction, onUpdate: NoAction)
+  budget_id             Int                @id @default(autoincrement())
+  budget_current_amount Decimal            @db.Decimal(10, 2)
+  budget_start          DateTime           @db.Timestamp(6)
+  budget_end            DateTime           @db.Timestamp(6)
+  budget_period         budget_period_type
+  budget_category       String             @db.VarChar(255)
+  budget_description    String?            @db.VarChar(255)
+  user_id               Int
+  budget_max_amount     Decimal            @db.Decimal(10, 2)
+  users                 users              @relation(fields: [user_id], references: [user_id], onDelete: NoAction, onUpdate: NoAction)
 }
 
 enum transac_type {
