@@ -51,7 +51,7 @@ model users {
 
 model budgets {
   budget_id             Int                @id @default(autoincrement())
-  budget_current_amount Decimal            @db.Decimal(10, 2)
+  budget_current_amount Decimal?           @db.Decimal(10, 2)
   budget_start          DateTime           @db.Timestamp(6)
   budget_end            DateTime           @db.Timestamp(6)
   budget_period         budget_period_type
