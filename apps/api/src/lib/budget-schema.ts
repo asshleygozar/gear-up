@@ -9,4 +9,9 @@ export const CreateBudgetSchema = z.object({
     budget_description: z.string(),
 });
 
+export const DeleteBudgetSchema = z.object({
+    budget_id: z.coerce.number(),
+});
+
 export type CreateBudgetType = z.infer<typeof CreateBudgetSchema>;
+export type DeleteBudgetType = z.infer<typeof DeleteBudgetSchema>;
