@@ -16,7 +16,7 @@ import {
 const router = Router();
 
 router.get("/", getAllTransactions);
-router.post("/create", validateBody(CreateTransactionSchema), createTransaction);
+router.post("/create-transaction", validateBody(CreateTransactionSchema), createTransaction);
 router.put("/update-transaction", validateBody(UpdateTransactionSchema), updateTransaction);
 router.delete("/delete-transaction", validateBody(DeleteTransactionSchema), deleteTransaction);
 

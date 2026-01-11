@@ -23,7 +23,9 @@ export async function createTransaction(
                 .json({ success: false, message: "Failed to create transaction", error: "Something went wrong" });
         }
 
-        return response.status(201).json({ success: true, message: "Transaction created successfully" });
+        return response
+            .status(201)
+            .json({ success: true, message: "Transaction created successfully", data: transaction });
     } catch (error) {
         console.error("Server error: ", error);
         if (error instanceof Prisma.PrismaClientKnownRequestError) {
