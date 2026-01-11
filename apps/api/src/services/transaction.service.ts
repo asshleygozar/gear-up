@@ -1,4 +1,3 @@
-import "dotenv/config.js";
 import { prisma } from "#lib/prisma.js";
 import { CreateTransactionType, UpdateTransactionType as DeleteTransactionType } from "#lib/transaction-schema.js";
 import GeneralError from "#errors/general-error.js";
@@ -10,137 +9,143 @@ export const createTransactionAndUpdateAccount = async ({
     data: CreateTransactionType;
     userId: number;
 }) => {
-    try {
-        const result = await prisma.$transaction(async (tx) => {
-            const transaction = await tx.transactions.create({
-                data: {
-                    ...data,
-                    user_id: userId,
-                },
-            });
+    const result = await prisma.$transaction(async (tx) => {
+        const transaction = await tx.transactions.create({
+            data: {
+                ...data,
+                user_id: userId,
+            },
+        });
 
-            switch (transaction.transaction_type) {
-                case "income":
-                    const incomeUpdate = await tx.accounts.update({
+        switch (transaction.transaction_type) {
+            case "income": {
+                const incomeUpdate = await tx.accounts.update({
+                    where: {
+                        account_id: transaction.account_id,
+                    },
+                    data: {
+                        total_income: {
+                            increment: transaction.transaction_amount,
+                        },
+                        total_balance: {
+                            increment: transaction.transaction_amount,
+                        },
+                    },
+                });
+                return incomeUpdate;
+            }
+
+            case "expense": {
+                const [expenseUpdate, _] = await Promise.all([
+                    await tx.accounts.update({
                         where: {
                             account_id: transaction.account_id,
                         },
                         data: {
-                            total_income: {
+                            total_expense: {
                                 increment: transaction.transaction_amount,
                             },
                             total_balance: {
+                                decrement: transaction.transaction_amount,
+                            },
+                        },
+                    }),
+                    await tx.budgets.updateMany({
+                        where: {
+                            user_id: userId,
+                            budget_category: transaction.transaction_category,
+                        },
+                        data: {
+                            budget_current_amount: {
                                 increment: transaction.transaction_amount,
                             },
                         },
-                    });
-                    return incomeUpdate;
+                    }),
+                ]);
 
-                case "expense": {
-                    const [expenseUpdate, _] = await Promise.all([
-                        await tx.accounts.update({
-                            where: {
-                                account_id: transaction.account_id,
-                            },
-                            data: {
-                                total_expense: {
-                                    increment: transaction.transaction_amount,
-                                },
-                                total_balance: {
-                                    decrement: transaction.transaction_amount,
-                                },
-                            },
-                        }),
-                        await tx.budgets.updateMany({
-                            where: {
-                                user_id: userId,
-                                budget_category: transaction.transaction_category,
-                            },
-                            data: {
-                                budget_current_amount: {
-                                    increment: transaction.transaction_amount,
-                                },
-                            },
-                        }),
-                    ]);
+                return expenseUpdate;
+            }
 
-                    return expenseUpdate;
+            case "transfer": {
+                if (!transaction.account_id_receiver) {
+                    throw new GeneralError("Incomplete Info error", "Receiver Account is not provided", 400);
                 }
 
-                case "transfer":
-                    if (!transaction.account_id_receiver) {
-                        throw new GeneralError("Incomplete Info error", "Receiver Account is not provided", 400);
-                    }
-
-                    const [_, receiverAccountUpdate] = await Promise.all([
-                        await tx.accounts.update({
-                            where: {
-                                account_id: transaction.account_id,
-                            },
-                            data: {
-                                total_expense: {
-                                    increment: transaction.transaction_amount,
-                                },
-                                total_balance: {
-                                    decrement: transaction.transaction_amount,
-                                },
-                            },
-                        }),
-                        await tx.accounts.update({
-                            where: {
-                                account_id: transaction.account_id_receiver,
-                            },
-                            data: {
-                                total_income: {
-                                    increment: transaction.transaction_amount,
-                                },
-                                total_balance: {
-                                    increment: transaction.transaction_amount,
-                                },
-                            },
-                        }),
-                    ]);
-
-                    return receiverAccountUpdate;
-                default:
-                    return new GeneralError("Type error", "Unknown or transaction type not provided", 400);
-            }
-        });
-
-        return result;
-    } catch (error) {
-        if (error) throw new GeneralError("Service error", "Failed to create and update account", 500);
-    }
-};
-
-export const deleteTransactionAndUpdateAccount = async ({ data }: { data: DeleteTransactionType }) => {
-    try {
-        const result = await prisma.$transaction(async (tx) => {
-            const deleteTransaction = await tx.transactions.delete({
-                where: {
-                    transaction_id: data.transaction_id,
-                },
-            });
-
-            switch (deleteTransaction.transaction_type) {
-                case "income":
-                    const incomeUpdate = await tx.accounts.update({
+                const [_, receiverAccountUpdate] = await Promise.all([
+                    await tx.accounts.update({
                         where: {
-                            account_id: deleteTransaction.account_id,
+                            account_id: transaction.account_id,
+                        },
+                        data: {
+                            total_expense: {
+                                increment: transaction.transaction_amount,
+                            },
+                            total_balance: {
+                                decrement: transaction.transaction_amount,
+                            },
+                        },
+                    }),
+                    await tx.accounts.update({
+                        where: {
+                            account_id: transaction.account_id_receiver,
                         },
                         data: {
                             total_income: {
-                                decrement: deleteTransaction.transaction_amount,
+                                increment: transaction.transaction_amount,
                             },
                             total_balance: {
-                                decrement: deleteTransaction.transaction_amount,
+                                increment: transaction.transaction_amount,
                             },
                         },
-                    });
-                    return incomeUpdate;
+                    }),
+                ]);
 
-                case "expense":
-                    const expenseUpdate = await tx.accounts.update({
+                return receiverAccountUpdate;
+            }
+            default: {
+                return new GeneralError("Type error", "Unknown or transaction type not provided", 400);
+            }
+        }
+    });
+
+    return result;
+};
+
+export const deleteTransactionAndUpdateAccount = async ({
+    userId,
+    data,
+}: {
+    userId: number;
+    data: DeleteTransactionType;
+}) => {
+    const result = await prisma.$transaction(async (tx) => {
+        const deleteTransaction = await tx.transactions.delete({
+            where: {
+                transaction_id: data.transaction_id,
+            },
+        });
+
+        switch (deleteTransaction.transaction_type) {
+            case "income": {
+                const incomeUpdate = await tx.accounts.update({
+                    where: {
+                        account_id: deleteTransaction.account_id,
+                    },
+                    data: {
+                        total_income: {
+                            decrement: deleteTransaction.transaction_amount,
+                        },
+                        total_balance: {
+                            decrement: deleteTransaction.transaction_amount,
+                        },
+                    },
+                });
+                return incomeUpdate;
+            }
+
+            case "expense": {
+                const [expenseUpdate, _] = await Promise.all([
+                    await tx.accounts.update({
                         where: {
                             account_id: deleteTransaction.account_id,
                         },
@@ -152,50 +157,60 @@ export const deleteTransactionAndUpdateAccount = async ({ data }: { data: Delete
                                 increment: deleteTransaction.transaction_amount,
                             },
                         },
-                    });
-                    return expenseUpdate;
-                case "transfer":
-                    if (!deleteTransaction.account_id_receiver) {
-                        throw new GeneralError("Incomplete Info error", "Receiver Account is not provided", 400);
-                    }
+                    }),
+                    await tx.budgets.updateMany({
+                        where: {
+                            user_id: userId,
+                            budget_category: deleteTransaction.transaction_category,
+                        },
+                        data: {
+                            budget_current_amount: {
+                                decrement: deleteTransaction.transaction_amount,
+                            },
+                        },
+                    }),
+                ]);
 
-                    const [_, receiverAccountDelete] = await Promise.all([
-                        await tx.accounts.update({
-                            where: {
-                                account_id: deleteTransaction.account_id,
-                            },
-                            data: {
-                                total_expense: {
-                                    decrement: deleteTransaction.transaction_amount,
-                                },
-                                total_balance: {
-                                    increment: deleteTransaction.transaction_amount,
-                                },
-                            },
-                        }),
-                        await tx.accounts.update({
-                            where: {
-                                account_id: deleteTransaction.account_id_receiver,
-                            },
-                            data: {
-                                total_income: {
-                                    decrement: deleteTransaction.transaction_amount,
-                                },
-                                total_balance: {
-                                    decrement: deleteTransaction.transaction_amount,
-                                },
-                            },
-                        }),
-                    ]);
-
-                    return receiverAccountDelete;
+                return expenseUpdate;
             }
-        });
+            case "transfer": {
+                if (!deleteTransaction.account_id_receiver) {
+                    throw new GeneralError("Incomplete Info error", "Receiver Account is not provided", 400);
+                }
 
-        return result;
-    } catch (error) {
-        if (error) {
-            throw new GeneralError("Service error", "Failed to delete transaction and update account", 500);
+                const [_, receiverAccountDelete] = await Promise.all([
+                    await tx.accounts.update({
+                        where: {
+                            account_id: deleteTransaction.account_id,
+                        },
+                        data: {
+                            total_expense: {
+                                decrement: deleteTransaction.transaction_amount,
+                            },
+                            total_balance: {
+                                increment: deleteTransaction.transaction_amount,
+                            },
+                        },
+                    }),
+                    await tx.accounts.update({
+                        where: {
+                            account_id: deleteTransaction.account_id_receiver,
+                        },
+                        data: {
+                            total_income: {
+                                decrement: deleteTransaction.transaction_amount,
+                            },
+                            total_balance: {
+                                decrement: deleteTransaction.transaction_amount,
+                            },
+                        },
+                    }),
+                ]);
+
+                return receiverAccountDelete;
+            }
         }
-    }
+    });
+
+    return result;
 };

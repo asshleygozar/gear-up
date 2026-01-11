@@ -78,7 +78,7 @@ export async function deleteTransaction(request: AuthenticatedRequest, response:
 
         if (!userId) throw new GeneralError("Unauthenticated user", " User is not authenticated", 401);
 
-        const transaction = await deleteTransactionAndUpdateAccount({ data: request.body });
+        const transaction = await deleteTransactionAndUpdateAccount({ userId: userId, data: request.body });
 
         return response.json({ success: true, message: "Transaction deleted successfully!", data: transaction });
     } catch (error) {
