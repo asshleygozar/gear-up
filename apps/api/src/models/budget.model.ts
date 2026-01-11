@@ -1,5 +1,5 @@
 import { budgets } from "#generated/prisma/client.js";
-import { DeleteBudgetType } from "#lib/budget-schema.js";
+import { DeleteBudgetType, UpdateBudgetType } from "#lib/budget-schema.js";
 import { prisma } from "#lib/prisma.js";
 
 export const BudgetModel = {
@@ -16,6 +16,16 @@ export const BudgetModel = {
                 budget_id: data.budget_id,
                 user_id: userId,
             },
+        });
+    },
+    updateBudget: async ({ userId, data }: { userId: number; data: UpdateBudgetType }) => {
+        const { budget_id, ...updatedData } = data;
+        return await prisma.budgets.update({
+            where: {
+                user_id: userId,
+                budget_id: data.budget_id,
+            },
+            data: updatedData,
         });
     },
 };

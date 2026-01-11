@@ -68,3 +68,24 @@ export async function deleteBudget(request: AuthenticatedRequest, response: Resp
         throw new GeneralError("Server error", "Failed to delete budget", 500);
     }
 }
+
+export async function updateBudget(request: AuthenticatedRequest, response: Response) {
+    try {
+        const userId = request.user?.id;
+
+        if (!userId)
+            return response
+                .status(401)
+                .json({ success: false, message: "User is not authenticated", error: "Unauthenticated" });
+
+        const budget = await BudgetModel.updateBudget({ userId: userId, data: request.body });
+
+        return response.json({ success: true, message: "Budget updated successfully!", data: budget });
+    } catch (error) {
+        if (error instanceof Prisma.PrismaClientKnownRequestError) {
+            throw new PrismaError(error);
+        }
+
+        throw new GeneralError("Server error", "Failed to update budget", 500);
+    }
+}
