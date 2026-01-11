@@ -36,21 +36,37 @@ export const createTransactionAndUpdateAccount = async ({
                     });
                     return incomeUpdate;
 
-                case "expense":
-                    const expenseUpdate = await tx.accounts.update({
-                        where: {
-                            account_id: transaction.account_id,
-                        },
-                        data: {
-                            total_expense: {
-                                increment: transaction.transaction_amount,
+                case "expense": {
+                    const [expenseUpdate, _] = await Promise.all([
+                        await tx.accounts.update({
+                            where: {
+                                account_id: transaction.account_id,
                             },
-                            total_balance: {
-                                decrement: transaction.transaction_amount,
+                            data: {
+                                total_expense: {
+                                    increment: transaction.transaction_amount,
+                                },
+                                total_balance: {
+                                    decrement: transaction.transaction_amount,
+                                },
                             },
-                        },
-                    });
+                        }),
+                        await tx.budgets.updateMany({
+                            where: {
+                                user_id: userId,
+                                budget_category: transaction.transaction_category,
+                            },
+                            data: {
+                                budget_current_amount: {
+                                    increment: transaction.transaction_amount,
+                                },
+                            },
+                        }),
+                    ]);
+
                     return expenseUpdate;
+                }
+
                 case "transfer":
                     if (!transaction.account_id_receiver) {
                         throw new GeneralError("Incomplete Info error", "Receiver Account is not provided", 400);
