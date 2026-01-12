@@ -1,12 +1,14 @@
 class GeneralError extends Error {
     message: string;
     status: number;
-    name: string;
-    constructor(name: string, message: string, status: number) {
+    error: string;
+    success: boolean;
+    constructor(error: string, message: string, status: number) {
         super(message);
+        this.success = false;
         this.message = message;
         this.status = status;
-        this.name = name;
+        this.error = error;
     }
 }
 
