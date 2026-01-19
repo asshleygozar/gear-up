@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { getToken, isAuthorized } from '@/utils/auth';
+import { getToken } from '@/utils/auth';
 
 export async function GET() {
 	try {
@@ -11,16 +11,15 @@ export async function GET() {
 				headers: {
 					Authorization: `Bearer ${token}`,
 				},
-			}
+			},
 		);
-		await isAuthorized(response.status);
 		const data = await response.json();
 		return NextResponse.json(data);
 	} catch (error) {
 		console.error('An error occurred: ', error);
 		return NextResponse.json(
 			{ error: 'Failed to fetch accounts' },
-			{ status: 500 }
+			{ status: 500 },
 		);
 	}
 }
