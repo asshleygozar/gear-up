@@ -55,7 +55,7 @@ export const SignIn = () => {
 
 			return response;
 		} catch (error) {
-			console.error(error);
+			console.log(error);
 			return {
 				success: false,
 				message:
@@ -68,7 +68,7 @@ export const SignIn = () => {
 
 	const [state, formAction, isPending] = useActionState<APIResponse, FormData>(
 		handleSubmit,
-		initialState
+		initialState,
 	);
 	return (
 		<Dialog>
@@ -198,7 +198,7 @@ export const SignUp = () => {
 
 	const [state, formAction, isPending] = useActionState<APIResponse, FormData>(
 		handleSubmit,
-		initialState
+		initialState,
 	);
 
 	return (
@@ -267,7 +267,7 @@ export const SignUp = () => {
 							<FormError className='text-red-500 text-[0.9rem]'>
 								{
 									state.errors.find(
-										(field) => field.field === 'confirmPassword'
+										(field) => field.field === 'confirmPassword',
 									)?.message
 								}
 							</FormError>

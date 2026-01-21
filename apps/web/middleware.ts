@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { NextRequest } from 'next/server';
+import type { NextRequest } from 'next/server';
 
 // Validate if has token on the middleware and do the proper validation on the dashboard instead using fetch
 export async function middleware(request: NextRequest) {
@@ -11,11 +11,11 @@ export async function middleware(request: NextRequest) {
 		const authRoutes = ['/signin', '/signup'];
 
 		const isProtectedRoute = protectedRoutes.some((route) =>
-			request.nextUrl.pathname.startsWith(route)
+			request.nextUrl.pathname.startsWith(route),
 		);
 		const isPublicRoute = publicRoutes.includes(pathname);
 		const isAuthRoute = authRoutes.some((route) =>
-			request.nextUrl.pathname.startsWith(route)
+			request.nextUrl.pathname.startsWith(route),
 		);
 
 		// Checks if has token + on landing page or auth page then automatically redirects to dashboard
@@ -28,6 +28,23 @@ export async function middleware(request: NextRequest) {
 			return NextResponse.redirect(new URL('/signin', request.url));
 		}
 
+		// Checks if the incoming request is proxy and will rewrite current api proxy to the actual server path
+		if (request.nextUrl.pathname.startsWith('/api/proxy')) {
+			const requestHeaders = new Headers(request.headers);
+
+			if (token) requestHeaders.set('Authorization', `Bearer ${token}`);
+			const targetURL = new URL(
+				request.nextUrl.pathname.replace(/^\/api/, ''),
+				`${process.env.NEXT_PUBLIC_API_ORIGIN}/api/`,
+			);
+
+			return NextResponse.rewrite(targetURL, {
+				request: {
+					headers: requestHeaders,
+				},
+			});
+		}
+
 		return NextResponse.next();
 	} catch (error) {
 		return NextResponse.redirect(new URL('/signin', request.url));
@@ -35,5 +52,11 @@ export async function middleware(request: NextRequest) {
 }
 
 export const config = {
-	matcher: ['/', '/signin', '/signup', '/dashboard/:path*'],
+	matcher: [
+		'/',
+		'/signin',
+		'/signup',
+		'/dashboard/:path*',
+		'/api/proxy/:path*',
+	],
 };
