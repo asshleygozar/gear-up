@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 
 // Validate if has token on the middleware and do the proper validation on the dashboard instead using fetch
-export async function middleware(request: NextRequest) {
+export default function proxy(request: NextRequest) {
 	try {
 		const { pathname } = request.nextUrl;
 		const token = request.cookies.get('token')?.value;
@@ -29,13 +29,13 @@ export async function middleware(request: NextRequest) {
 		}
 
 		// Checks if the incoming request is proxy and will rewrite current api proxy to the actual server path
-		if (request.nextUrl.pathname.startsWith('/api/proxy')) {
+		if (request.nextUrl.pathname.startsWith('/api')) {
 			const requestHeaders = new Headers(request.headers);
 
 			if (token) requestHeaders.set('Authorization', `Bearer ${token}`);
+			const apiPath = request.nextUrl.pathname.replace(/^\/api/, '');
 			const targetURL = new URL(
-				request.nextUrl.pathname.replace(/^\/api/, ''),
-				`${process.env.NEXT_PUBLIC_API_ORIGIN}/api/`,
+				`${process.env.NEXT_PUBLIC_API_ORIGIN}/api/${apiPath}`,
 			);
 
 			return NextResponse.rewrite(targetURL, {
@@ -52,11 +52,5 @@ export async function middleware(request: NextRequest) {
 }
 
 export const config = {
-	matcher: [
-		'/',
-		'/signin',
-		'/signup',
-		'/dashboard/:path*',
-		'/api/proxy/:path*',
-	],
+	matcher: ['/', '/signin', '/signup', '/dashboard/:path*', '/api/:path*'],
 };
