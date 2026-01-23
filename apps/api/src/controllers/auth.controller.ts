@@ -34,18 +34,26 @@ export async function signIn(request: Request<any, any, SignInType>, response: R
             username: user.username,
         });
 
-        return response.status(200).json({
-            success: true,
-            message: "Signed in successfully!",
-            data: {
-                id: user.user_id,
-                email: user.email,
-                username: user.username,
-                firstName: user.first_name,
-                lastName: user.last_name,
-            },
-            token,
-        });
+        return response
+            .status(200)
+            .cookie("token", token, {
+                httpOnly: true,
+                secure: process.env.NODE_ENV === "production",
+                sameSite: "lax",
+                path: "/",
+                maxAge: 24 * 60 * 60 * 1000,
+            })
+            .json({
+                success: true,
+                message: "Signed in successfully!",
+                data: {
+                    id: user.user_id,
+                    email: user.email,
+                    username: user.username,
+                    firstName: user.first_name,
+                    lastName: user.last_name,
+                },
+            });
     } catch (error) {
         console.error("Server error: ", error);
         if (error instanceof Prisma.PrismaClientKnownRequestError) {
@@ -89,8 +97,13 @@ export async function signUp(request: Request<any, any, SignUpType>, response: R
         });
         return response
             .status(201)
-
-            .json({
+            .cookie("token", token, {
+                httpOnly: true,
+                secure: process.env.NODE_ENV === "production",
+                sameSite: "lax",
+                path: "/",
+                maxAge: 24 * 60 * 60 * 1000, // 1 day
+            }).json({
                 success: true,
                 message: "Sign up successfully",
                 data: {
@@ -101,7 +114,6 @@ export async function signUp(request: Request<any, any, SignUpType>, response: R
                     lastName: user.last_name,
                     createdAt: user.created_at,
                 },
-                token,
             });
     } catch (error) {
         if (error instanceof Prisma.PrismaClientKnownRequestError) {
