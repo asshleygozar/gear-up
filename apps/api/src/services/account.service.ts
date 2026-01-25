@@ -8,12 +8,12 @@ export const deleteAccountAndTransactions = async ({ data }: { data: DeleteAccou
             const [deletedAccount, _] = await Promise.all([
                 await tx.accounts.delete({
                     where: {
-                        account_id: data.account_id,
+                        accountId: data.accountId,
                     },
                 }),
                 await tx.transactions.deleteMany({
                     where: {
-                        account_id: data.account_id,
+                        accountId: data.accountId,
                     },
                 }),
             ]);

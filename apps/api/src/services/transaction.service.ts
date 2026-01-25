@@ -13,22 +13,22 @@ export const createTransactionAndUpdateAccount = async ({
         const transaction = await tx.transactions.create({
             data: {
                 ...data,
-                user_id: userId,
+                userId: userId,
             },
         });
 
-        switch (transaction.transaction_type) {
+        switch (transaction.transactionType) {
             case "income": {
                 const incomeUpdate = await tx.accounts.update({
                     where: {
-                        account_id: transaction.account_id,
+                        accountId: transaction.accountId,
                     },
                     data: {
-                        total_income: {
-                            increment: transaction.transaction_amount,
+                        totalIncome: {
+                            increment: transaction.transactionAmount,
                         },
-                        total_balance: {
-                            increment: transaction.transaction_amount,
+                        totalBalance: {
+                            increment: transaction.transactionAmount,
                         },
                     },
                 });
@@ -39,25 +39,25 @@ export const createTransactionAndUpdateAccount = async ({
                 const [expenseUpdate, _] = await Promise.all([
                     await tx.accounts.update({
                         where: {
-                            account_id: transaction.account_id,
+                            accountId: transaction.accountId,
                         },
                         data: {
-                            total_expense: {
-                                increment: transaction.transaction_amount,
+                            totalExpense: {
+                                increment: transaction.transactionAmount,
                             },
-                            total_balance: {
-                                decrement: transaction.transaction_amount,
+                            totalBalance: {
+                                decrement: transaction.transactionAmount,
                             },
                         },
                     }),
                     await tx.budgets.updateMany({
                         where: {
-                            user_id: userId,
-                            budget_category: transaction.transaction_category,
+                            userId: userId,
+                            budgetCategory: transaction.transactionCategory,
                         },
                         data: {
-                            budget_current_amount: {
-                                increment: transaction.transaction_amount,
+                            budgetCurrentAmount: {
+                                increment: transaction.transactionAmount,
                             },
                         },
                     }),
@@ -67,34 +67,34 @@ export const createTransactionAndUpdateAccount = async ({
             }
 
             case "transfer": {
-                if (!transaction.account_id_receiver) {
+                if (!transaction.accountIdReceiver) {
                     throw new GeneralError("Incomplete Info error", "Receiver Account is not provided", 400);
                 }
 
                 const [_, receiverAccountUpdate] = await Promise.all([
                     await tx.accounts.update({
                         where: {
-                            account_id: transaction.account_id,
+                            accountId: transaction.accountId,
                         },
                         data: {
-                            total_expense: {
-                                increment: transaction.transaction_amount,
+                            totalExpense: {
+                                increment: transaction.transactionAmount,
                             },
-                            total_balance: {
-                                decrement: transaction.transaction_amount,
+                            totalBalance: {
+                                decrement: transaction.transactionAmount,
                             },
                         },
                     }),
                     await tx.accounts.update({
                         where: {
-                            account_id: transaction.account_id_receiver,
+                            accountId: transaction.accountIdReceiver,
                         },
                         data: {
-                            total_income: {
-                                increment: transaction.transaction_amount,
+                            totalIncome: {
+                                increment: transaction.transactionAmount,
                             },
-                            total_balance: {
-                                increment: transaction.transaction_amount,
+                            totalBalance: {
+                                increment: transaction.transactionAmount,
                             },
                         },
                     }),
@@ -121,22 +121,22 @@ export const deleteTransactionAndUpdateAccount = async ({
     const result = await prisma.$transaction(async (tx) => {
         const deleteTransaction = await tx.transactions.delete({
             where: {
-                transaction_id: data.transaction_id,
+                transactionId: data.transactionId,
             },
         });
 
-        switch (deleteTransaction.transaction_type) {
+        switch (deleteTransaction.transactionType) {
             case "income": {
                 const incomeUpdate = await tx.accounts.update({
                     where: {
-                        account_id: deleteTransaction.account_id,
+                        accountId: deleteTransaction.accountId,
                     },
                     data: {
-                        total_income: {
-                            decrement: deleteTransaction.transaction_amount,
+                        totalIncome: {
+                            decrement: deleteTransaction.transactionAmount,
                         },
-                        total_balance: {
-                            decrement: deleteTransaction.transaction_amount,
+                        totalBalance: {
+                            decrement: deleteTransaction.transactionAmount,
                         },
                     },
                 });
@@ -147,25 +147,25 @@ export const deleteTransactionAndUpdateAccount = async ({
                 const [expenseUpdate, _] = await Promise.all([
                     await tx.accounts.update({
                         where: {
-                            account_id: deleteTransaction.account_id,
+                            accountId: deleteTransaction.accountId,
                         },
                         data: {
-                            total_expense: {
-                                decrement: deleteTransaction.transaction_amount,
+                            totalExpense: {
+                                decrement: deleteTransaction.transactionAmount,
                             },
-                            total_balance: {
-                                increment: deleteTransaction.transaction_amount,
+                            totalBalance: {
+                                increment: deleteTransaction.transactionAmount,
                             },
                         },
                     }),
                     await tx.budgets.updateMany({
                         where: {
-                            user_id: userId,
-                            budget_category: deleteTransaction.transaction_category,
+                            userId: userId,
+                            budgetCategory: deleteTransaction.transactionCategory,
                         },
                         data: {
-                            budget_current_amount: {
-                                decrement: deleteTransaction.transaction_amount,
+                            budgetCurrentAmount: {
+                                decrement: deleteTransaction.transactionAmount,
                             },
                         },
                     }),
@@ -174,34 +174,34 @@ export const deleteTransactionAndUpdateAccount = async ({
                 return expenseUpdate;
             }
             case "transfer": {
-                if (!deleteTransaction.account_id_receiver) {
+                if (!deleteTransaction.accountIdReceiver) {
                     throw new GeneralError("Incomplete Info error", "Receiver Account is not provided", 400);
                 }
 
                 const [_, receiverAccountDelete] = await Promise.all([
                     await tx.accounts.update({
                         where: {
-                            account_id: deleteTransaction.account_id,
+                            accountId: deleteTransaction.accountId,
                         },
                         data: {
-                            total_expense: {
-                                decrement: deleteTransaction.transaction_amount,
+                            totalExpense: {
+                                decrement: deleteTransaction.transactionAmount,
                             },
-                            total_balance: {
-                                increment: deleteTransaction.transaction_amount,
+                            totalBalance: {
+                                increment: deleteTransaction.transactionAmount,
                             },
                         },
                     }),
                     await tx.accounts.update({
                         where: {
-                            account_id: deleteTransaction.account_id_receiver,
+                            accountId: deleteTransaction.accountIdReceiver,
                         },
                         data: {
-                            total_income: {
-                                decrement: deleteTransaction.transaction_amount,
+                            totalIncome: {
+                                decrement: deleteTransaction.transactionAmount,
                             },
-                            total_balance: {
-                                decrement: deleteTransaction.transaction_amount,
+                            totalBalance: {
+                                decrement: deleteTransaction.transactionAmount,
                             },
                         },
                     }),

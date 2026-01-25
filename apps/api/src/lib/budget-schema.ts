@@ -1,26 +1,26 @@
 import * as z from "zod";
 
 export const CreateBudgetSchema = z.object({
-    budget_max_amount: z.coerce.number(),
-    budget_start: z.iso.datetime(),
-    budget_end: z.iso.datetime(),
-    budget_period: z.enum(["monthly", "weekly", "daily", "one-time"]),
-    budget_category: z.string(),
-    budget_description: z.string(),
+    budgetMaxAmount: z.coerce.number(),
+    budgetStart: z.iso.datetime(),
+    budgetEnd: z.iso.datetime(),
+    budgetPeriod: z.enum(["monthly", "weekly", "daily", "one-time"]),
+    budgetCategory: z.string(),
+    budgetDescription: z.string(),
 });
 
 export const DeleteBudgetSchema = z.object({
-    budget_id: z.coerce.number(),
+    budgetId: z.coerce.number(),
 });
 
 export const UpdateBudgetSchema = z.object({
-    budget_id: z.coerce.number(),
-    budget_max_amount: z.coerce.number(),
-    budget_start: z.iso.datetime(),
-    budget_end: z.iso.datetime(),
-    budget_period: z.enum(["monthly", "weekly", "daily", "one-time"]),
-    budget_category: z.string(),
-    budget_description: z.string().optional(),
+    budgetId: z.coerce.number(),
+    budgetMaxAmount: z.coerce.number(),
+    budgetStart: z.iso.datetime(),
+    budgetEnd: z.iso.datetime(),
+    budgetPeriod: z.enum(["monthly", "weekly", "daily", "one-time"]),
+    budgetCategory: z.string(),
+    budgetDescription: z.string().optional(),
 });
 
 export type CreateBudgetType = z.infer<typeof CreateBudgetSchema>;

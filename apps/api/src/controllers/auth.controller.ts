@@ -2,7 +2,7 @@ import { UserModel } from "#models/user.model.js";
 import type { Request, Response } from "express";
 import { comparePassword, hashPassword } from "#lib/password.js";
 import { generateJWTToken } from "#lib/jwt.js";
-import type { SignInType, SignUpType } from "#lib/auth.js";
+import type { SignInType, SignUpType } from "#lib/auth-schema.js";
 import { PrismaError } from "#errors/prisma-error.js";
 import { Prisma } from "#generated/prisma/client.js";
 
@@ -29,7 +29,7 @@ export async function signIn(request: Request<any, any, SignInType>, response: R
             });
 
         const token = await generateJWTToken({
-            id: user.user_id,
+            id: user.userId,
             email: user.email,
             username: user.username,
         });
@@ -47,11 +47,11 @@ export async function signIn(request: Request<any, any, SignInType>, response: R
                 success: true,
                 message: "Signed in successfully!",
                 data: {
-                    id: user.user_id,
+                    id: user.userId,
                     email: user.email,
                     username: user.username,
-                    firstName: user.first_name,
-                    lastName: user.last_name,
+                    firstName: user.firstName,
+                    lastName: user.lastName,
                 },
             });
     } catch (error) {
@@ -91,7 +91,7 @@ export async function signUp(request: Request<any, any, SignUpType>, response: R
         });
 
         const token = await generateJWTToken({
-            id: user.user_id,
+            id: user.userId,
             email: user.email,
             username: user.username,
         });
@@ -103,16 +103,17 @@ export async function signUp(request: Request<any, any, SignUpType>, response: R
                 sameSite: "lax",
                 path: "/",
                 maxAge: 24 * 60 * 60 * 1000, // 1 day
-            }).json({
+            })
+            .json({
                 success: true,
                 message: "Sign up successfully",
                 data: {
-                    id: user.user_id,
+                    id: user.userId,
                     email: user.email,
                     username: user.username,
-                    firstName: user.first_name,
-                    lastName: user.last_name,
-                    createdAt: user.created_at,
+                    firstName: user.firstName,
+                    lastName: user.lastName,
+                    createdAt: user.createdAt,
                 },
             });
     } catch (error) {

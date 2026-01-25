@@ -5,7 +5,7 @@ export const AccountModel = {
     getAllAccounts: async (userId: number) => {
         return await prisma.accounts.findMany({
             where: {
-                user_id: userId,
+                userId: userId,
             },
         });
     },
@@ -13,15 +13,15 @@ export const AccountModel = {
         return await prisma.accounts.create({
             data: {
                 ...data,
-                user_id: userId,
+                userId: userId,
             },
         });
     },
     updateAccount: async ({ userId, data }: { userId: number; data: UpdateAccountType }) => {
         return await prisma.accounts.update({
             where: {
-                user_id: userId,
-                account_id: data.account_id,
+                userId: userId,
+                accountId: data.accountId,
             },
             data,
         });

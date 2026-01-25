@@ -7,59 +7,67 @@ datasource db {
   provider = "postgresql"
 }
 
-model accounts {
-  account_id                                              Int            @id @default(autoincrement())
-  account_name                                            String         @db.VarChar(255)
-  account_type                                            String         @db.VarChar(255)
-  total_balance                                           Decimal        @db.Decimal(10, 2)
-  total_income                                            Decimal        @db.Decimal(10, 2)
-  total_expense                                           Decimal        @db.Decimal(10, 2)
-  user_id                                                 Int
-  users                                                   users          @relation(fields: [user_id], references: [user_id], onDelete: Cascade, onUpdate: NoAction)
-  transactions_transactions_account_id_receiverToaccounts transactions[] @relation("transactions_account_id_receiverToaccounts")
-  transactions                                            transactions[]
+model Accounts {
+  accountId                                               Int            @id @default(autoincrement()) @map("account_id")
+  accountName                                             String         @map("account_name") @db.VarChar(255)
+  accountType                                             String         @map("account_type") @db.VarChar(255)
+  totalBalance                                            Decimal        @map("total_balance") @db.Decimal(10, 2)
+  totalIncome                                             Decimal        @map("total_income") @db.Decimal(10, 2)
+  totalExpense                                            Decimal        @map("total_expense") @db.Decimal(10, 2)
+  userId                                                  Int            @map("user_id")
+  users                                                   Users          @relation(fields: [userId], references: [userId], onDelete: Cascade, onUpdate: NoAction)
+  transactions_transactions_account_id_receiverToaccounts Transactions[] @relation("transactions_account_id_receiverToaccounts")
+  transactions                                            Transactions[]
+
+  @@map("accounts")
 }
 
-model transactions {
-  transaction_id                                      Int           @id @default(autoincrement())
-  transaction_category                                String        @db.VarChar(255)
-  transaction_amount                                  Decimal       @db.Decimal(10, 2)
-  transaction_date                                    DateTime      @default(now()) @db.Timestamp(6)
-  transaction_description                             String?       @db.VarChar(255)
-  account_id                                          Int
-  user_id                                             Int
-  account_id_receiver                                 Int?
-  transaction_type                                    transac_type?
-  accounts_transactions_account_id_receiverToaccounts accounts?     @relation("transactions_account_id_receiverToaccounts", fields: [account_id_receiver], references: [account_id], onDelete: Cascade, onUpdate: NoAction, map: "fk_account_receiver")
-  accounts                                            accounts      @relation(fields: [account_id], references: [account_id], onDelete: Cascade, onUpdate: NoAction)
-  users                                               users         @relation(fields: [user_id], references: [user_id], onDelete: Cascade, onUpdate: NoAction)
+model Transactions {
+  transactionId                                       Int           @id @default(autoincrement()) @map("transaction_id")
+  transactionCategory                                 String        @map("transactionCategory") @db.VarChar(255)
+  transactionAmount                                   Decimal       @map("transaction_amount") @db.Decimal(10, 2)
+  transactionDate                                     DateTime      @default(now()) @map("transaction_date") @db.Timestamp(6)
+  transactionDescription                              String?       @map("transaction_description") @db.VarChar(255)
+  accountId                                           Int           @map("account_id")
+  userId                                              Int           @map("user_id")
+  accountIdReceiver                                   Int?          @map("account_id_receiver")
+  transactionType                                     transac_type? @map("transaction_type")
+  accounts_transactions_account_id_receiverToaccounts Accounts?     @relation("transactions_account_id_receiverToaccounts", fields: [accountIdReceiver], references: [accountId], onDelete: Cascade, onUpdate: NoAction, map: "fk_account_receiver")
+  accounts                                            Accounts      @relation(fields: [accountId], references: [accountId], onDelete: Cascade, onUpdate: NoAction)
+  users                                               Users         @relation(fields: [userId], references: [userId], onDelete: Cascade, onUpdate: NoAction)
+
+  @@map("transactions")
 }
 
-model users {
+model Users {
   email        String         @unique @db.VarChar(255)
   password     String         @db.VarChar(255)
-  first_name   String?        @db.VarChar(255)
-  last_name    String?        @db.VarChar(255)
+  firstName    String?        @map("first_name") @db.VarChar(255)
+  lastName     String?        @map("last_name") @db.VarChar(255)
   username     String         @unique @db.VarChar(255)
-  user_id      Int            @id @default(autoincrement())
-  created_at   DateTime       @default(now()) @db.Timestamp(6)
-  updated_at   DateTime       @default(now()) @db.Timestamp(6)
-  accounts     accounts[]
-  budgets      budgets[]
-  transactions transactions[]
+  userId       Int            @id @default(autoincrement()) @map("user_id")
+  createdAt    DateTime       @default(now()) @map("created_at") @db.Timestamp(6)
+  updatedAt    DateTime       @default(now()) @map("updated_at") @db.Timestamp(6)
+  accounts     Accounts[]
+  budgets      Budgets[]
+  transactions Transactions[]
+
+  @@map("users")
 }
 
-model budgets {
-  budget_id             Int                @id @default(autoincrement())
-  budget_current_amount Decimal?           @db.Decimal(10, 2)
-  budget_start          DateTime           @db.Timestamp(6)
-  budget_end            DateTime           @db.Timestamp(6)
-  budget_period         budget_period_type
-  budget_category       String             @db.VarChar(255)
-  budget_description    String?            @db.VarChar(255)
-  user_id               Int
-  budget_max_amount     Decimal            @db.Decimal(10, 2)
-  users                 users              @relation(fields: [user_id], references: [user_id], onDelete: NoAction, onUpdate: NoAction)
+model Budgets {
+  budgetId            Int                @id @default(autoincrement()) @map("budget_id")
+  budgetCurrentAmount Decimal?           @map("budget_current_amount") @db.Decimal(10, 2)
+  budgetStart         DateTime           @map("budget_start") @db.Timestamp(6)
+  budgetEnd           DateTime           @map("budget_end") @db.Timestamp(6)
+  budgetPeriod        budget_period_type @map("budget_period")
+  budgetCategory      String             @map("budget_category") @db.VarChar(255)
+  budgetDescription   String?            @map("budget_description") @db.VarChar(255)
+  userId              Int                @map("user_id")
+  budgetMaxAmount     Decimal            @map("budget_max_amount") @db.Decimal(10, 2)
+  users               Users              @relation(fields: [userId], references: [userId], onDelete: NoAction, onUpdate: NoAction)
+
+  @@map("budgets")
 }
 
 enum transac_type {
